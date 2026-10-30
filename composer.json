@@ -35,7 +35,8 @@
 		"phpstan/phpstan": "^1.0",
 		"phpunit/phpunit": "^9.0",
 		"phpstan/extension-installer": "^1.1",
-		"symfony/var-dumper": "^5.1"
+		"symfony/var-dumper": "^5.1",
+		"carthage-software/mago": "^1.59"
 	},
 	"extra": {
 		"branch-alias": {
@@ -50,7 +51,8 @@
 	"autoload-dev": {
 		"psr-4": {
 			"Phpactor\\LanguageServer\\Tests\\": "tests/",
-			"AcmeLs\\": "example/server/acme-ls/"
+			"AcmeLs\\": "example/server/acme-ls/",
+			"Dev\\": "dev/"
 		}
 	},
 	"minimum-stability": "dev",

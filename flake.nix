@@ -14,7 +14,6 @@
           buildInputs = with pkgs; [
             php82
             php82.packages.composer
-            mago
             dprint
           ];
         };
