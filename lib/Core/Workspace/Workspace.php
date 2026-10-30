@@ -1,10 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Workspace;
 
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
 use Phpactor\LanguageServer\Core\Workspace\Exception\UnknownDocument;
 use Phpactor\LanguageServerProtocol\TextDocumentIdentifier;
 use Phpactor\LanguageServerProtocol\TextDocumentItem;
@@ -13,9 +12,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * @implements IteratorAggregate<string,TextDocumentItem>
+ * @implements \IteratorAggregate<string,TextDocumentItem>
  */
-class Workspace implements Countable, IteratorAggregate
+class Workspace implements \Countable, \IteratorAggregate
 {
 	/**
 	 * @var TextDocumentItem[]
@@ -64,7 +63,7 @@ class Workspace implements Countable, IteratorAggregate
 		// behavior the an update from the client to the server.
 		$currentVersion = $this->documentVersions[$textDocument->uri];
 		if (null !== $textDocument->version && $currentVersion > $textDocument->version) {
-			$this->logger->info(sprintf(
+			$this->logger->info(\sprintf(
 				'Version "%s" of incoming document (%s) is older than current version (%s), ignoring',
 				$textDocument->version,
 				$textDocument->uri,
@@ -80,7 +79,7 @@ class Workspace implements Countable, IteratorAggregate
 
 	public function openFiles(): int
 	{
-		return count($this->documents);
+		return \count($this->documents);
 	}
 
 	public function remove(TextDocumentIdentifier $identifier): void
@@ -102,10 +101,10 @@ class Workspace implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return ArrayIterator<string,TextDocumentItem>
+	 * @return \ArrayIterator<string,TextDocumentItem>
 	 */
-	public function getIterator(): ArrayIterator
+	public function getIterator(): \ArrayIterator
 	{
-		return new ArrayIterator($this->documents);
+		return new \ArrayIterator($this->documents);
 	}
 }

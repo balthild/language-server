@@ -1,8 +1,8 @@
 <?php
 
-namespace Phpactor\LanguageServer\Core\Handler;
+declare(strict_types=1);
 
-use RuntimeException;
+namespace Phpactor\LanguageServer\Core\Handler;
 
 final class HandlerMethodResolver
 {
@@ -10,24 +10,24 @@ final class HandlerMethodResolver
 	{
 		$handlerMap = $handler->methods();
 
-		if (!array_key_exists($languageServerMethod, $handlerMap)) {
-			throw new RuntimeException(sprintf(
+		if (!\array_key_exists($languageServerMethod, $handlerMap)) {
+			throw new \RuntimeException(\sprintf(
 				'Resolved handler "%s" has not declared support for LSP method "%s", it declared support for "%s"',
 				$handler::class,
 				$languageServerMethod,
-				implode('", "', $handlerMap),
+				\implode('", "', $handlerMap),
 			));
 		}
 
 		$method = $handlerMap[$languageServerMethod];
 
-		if (!method_exists($handler, $method)) {
-			throw new RuntimeException(sprintf(
+		if (!\method_exists($handler, $method)) {
+			throw new \RuntimeException(\sprintf(
 				'Handler "%s" for method "%s" does not have the "%s" method defined, it has "%s"',
 				$handler::class,
 				$languageServerMethod,
 				$method,
-				implode('", "', get_class_methods($handler)),
+				\implode('", "', \get_class_methods($handler)),
 			));
 		}
 

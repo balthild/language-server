@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Diagnostics;
 
 use Amp\Cancellation;
@@ -34,7 +36,7 @@ class CodeActionDiagnosticsProvider implements DiagnosticsProvider
 				$textDocument,
 				new Range(
 					new Position(0, 0),
-					new Position(PHP_INT_MAX, PHP_INT_MAX),
+					new Position(\PHP_INT_MAX, \PHP_INT_MAX),
 				),
 				$cancel,
 			);

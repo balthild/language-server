@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Workspace;
 
-use Generator;
 use Phpactor\LanguageServer\Core\Workspace\Exception\UnknownDocument;
 use Phpactor\LanguageServer\Core\Workspace\Workspace;
 use Phpactor\LanguageServerProtocol\TextDocumentIdentifier;
@@ -93,7 +94,7 @@ class WorkspaceTest extends TestCase
 	}
 
 	/**
-	 * @return Generator<string,array{int,int,bool}|array{int,null,bool}>
+	 * @return \Generator<string,array{int,int,bool}|array{int,null,bool}>
 	 */
 	public function provideDoesNotUpdateDocumentWithLowerVersionThanExistingDocument()
 	{
@@ -141,6 +142,6 @@ class WorkspaceTest extends TestCase
 		$this->workspace->open($doc1);
 		$this->workspace->open($doc2);
 
-		$this->assertCount(2, iterator_to_array($this->workspace));
+		$this->assertCount(2, \iterator_to_array($this->workspace));
 	}
 }

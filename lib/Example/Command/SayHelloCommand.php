@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Example\Command;
 
 use Phpactor\LanguageServer\Core\Command\Command;
@@ -11,6 +13,9 @@ class SayHelloCommand implements Command
 
 	public function __invoke(string $name): void
 	{
-		$this->api->window()->showMessage()->info(sprintf('Hello %s!', $name));
+		$this->api
+			->window()
+			->showMessage()
+			->info(\sprintf('Hello %s!', $name));
 	}
 }

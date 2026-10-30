@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Rpc;
 
-use JsonSerializable;
-
-final class ResponseMessage extends Message implements JsonSerializable
+final class ResponseMessage extends Message implements \JsonSerializable
 {
 	/**
 	 * @param mixed $result

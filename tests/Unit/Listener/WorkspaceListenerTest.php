@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Listener;
 
 use Phpactor\LanguageServer\Core\Workspace\Workspace;
@@ -70,7 +72,6 @@ class WorkspaceListenerTest extends TestCase
 		foreach ($this->listener->getListenersForEvent($event) as $listener) {
 			$listener($event);
 		}
-		;
 	}
 
 	private function createDocument(string $uri): TextDocumentItem

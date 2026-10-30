@@ -6,11 +6,6 @@ parameters:
 			path: lib/Adapter/DTL/DTLArgumentResolver.php
 
 		-
-			message: "#^Call to an undefined method Phpactor\\\\LanguageServer\\\\Core\\\\Command\\\\Command\\:\\:__invoke\\(\\)\\.$#"
-			count: 1
-			path: lib/Core/Command/CommandDispatcher.php
-
-		-
 			message: "#^Method Phpactor\\\\LanguageServer\\\\Core\\\\Dispatcher\\\\ArgumentResolver\\:\\:resolveArguments\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: lib/Core/Dispatcher/ArgumentResolver.php
@@ -19,16 +14,6 @@ parameters:
 			message: "#^Method Phpactor\\\\LanguageServer\\\\Core\\\\Dispatcher\\\\ArgumentResolver\\\\ChainArgumentResolver\\:\\:resolveArguments\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: lib/Core/Dispatcher/ArgumentResolver/ChainArgumentResolver.php
-
-		-
-			message: "#^Method Phpactor\\\\LanguageServer\\\\Core\\\\Dispatcher\\\\ArgumentResolver\\\\LanguageSeverProtocolParamsResolver\\:\\:doResolveArguments\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: lib/Core/Dispatcher/ArgumentResolver/LanguageSeverProtocolParamsResolver.php
-
-		-
-			message: "#^Method Phpactor\\\\LanguageServer\\\\Core\\\\Dispatcher\\\\ArgumentResolver\\\\LanguageSeverProtocolParamsResolver\\:\\:doResolveArguments\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: lib/Core/Dispatcher/ArgumentResolver/LanguageSeverProtocolParamsResolver.php
 
 		-
 			message: "#^Method Phpactor\\\\LanguageServer\\\\Core\\\\Dispatcher\\\\ArgumentResolver\\\\LanguageSeverProtocolParamsResolver\\:\\:resolveArguments\\(\\) return type has no value type specified in iterable type array\\.$#"

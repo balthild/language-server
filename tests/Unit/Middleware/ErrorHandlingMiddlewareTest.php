@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Middleware;
 
 use Amp\PHPUnit\AsyncTestCase;
@@ -14,7 +16,6 @@ use Phpactor\LanguageServer\Core\Server\Exception\ExitSession;
 use Phpactor\LanguageServer\Middleware\ClosureMiddleware;
 use Phpactor\LanguageServer\Middleware\ErrorHandlingMiddleware;
 use Psr\Log\Test\TestLogger;
-use RuntimeException;
 
 class ErrorHandlingMiddlewareTest extends AsyncTestCase
 {
@@ -31,9 +32,7 @@ class ErrorHandlingMiddlewareTest extends AsyncTestCase
 		$response = $this->createMiddleware()->process(
 			new NotificationMessage('foobar'),
 			new RequestHandler([
-				new ClosureMiddleware(function () {
-					return new ResponseMessage(1, null);
-				}),
+				new ClosureMiddleware(static fn () => new ResponseMessage(1, null)),
 			]),
 		);
 
@@ -48,7 +47,7 @@ class ErrorHandlingMiddlewareTest extends AsyncTestCase
 		$this->createMiddleware()->process(
 			new NotificationMessage('foobar'),
 			new RequestHandler([
-				new ClosureMiddleware(function (): void {
+				new ClosureMiddleware(static function (): void {
 					throw new ExitSession('please');
 				}),
 			]),
@@ -60,8 +59,8 @@ class ErrorHandlingMiddlewareTest extends AsyncTestCase
 		$response = $this->createMiddleware()->process(
 			new NotificationMessage('foobar'),
 			new RequestHandler([
-				new ClosureMiddleware(function (): void {
-					throw new RuntimeException('please');
+				new ClosureMiddleware(static function (): void {
+					throw new \RuntimeException('please');
 				}),
 			]),
 		);
@@ -75,41 +74,41 @@ class ErrorHandlingMiddlewareTest extends AsyncTestCase
 		$response = $this->createMiddleware()->process(
 			new RequestMessage(1, 'foobar', []),
 			new RequestHandler([
-				new ClosureMiddleware(function (): void {
-					throw new RuntimeException('please');
+				new ClosureMiddleware(static function (): void {
+					throw new \RuntimeException('please');
 				}),
 			]),
 		);
 
 		self::assertInstanceOf(ResponseMessage::class, $response);
-		assert($response instanceof ResponseMessage);
+		\assert($response instanceof ResponseMessage);
 		self::assertInstanceOf(ResponseError::class, $response->error);
 		self::assertStringContainsString(
 			'Exception [RuntimeException] please',
 			$response->error->message,
 		);
-		self::assertEquals(ErrorCodes::InternalError, $response->error->code);
+		self::assertEquals(ErrorCodes::INTERNAL_ERROR, $response->error->code);
 	}
 
-	public function testMethodNotFoundCodeForHandlerNotFound(): void
+	public function testMETHOD_NOT_FOUNDCodeForHandlerNotFound(): void
 	{
 		$response = $this->createMiddleware()->process(
 			new RequestMessage(1, 'foobar', []),
 			new RequestHandler([
-				new ClosureMiddleware(function (): void {
+				new ClosureMiddleware(static function (): void {
 					throw new HandlerNotFound('please');
 				}),
 			]),
 		);
 
 		self::assertInstanceOf(ResponseMessage::class, $response);
-		assert($response instanceof ResponseMessage);
+		\assert($response instanceof ResponseMessage);
 		self::assertInstanceOf(ResponseError::class, $response->error);
 		self::assertStringContainsString(
 			'Exception [Phpactor\LanguageServer\Core\Handler\HandlerNotFound] please',
 			$response->error->message,
 		);
-		self::assertEquals(ErrorCodes::MethodNotFound, $response->error->code);
+		self::assertEquals(ErrorCodes::METHOD_NOT_FOUND, $response->error->code);
 	}
 
 	private function createMiddleware(): ErrorHandlingMiddleware

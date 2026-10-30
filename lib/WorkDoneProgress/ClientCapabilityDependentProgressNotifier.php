@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\WorkDoneProgress;
 
 use Phpactor\LanguageServer\Core\Server\ClientApi;

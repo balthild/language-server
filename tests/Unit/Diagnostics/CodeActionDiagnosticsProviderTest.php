@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Diagnostics;
 
 use Amp\Cancellation;
@@ -11,8 +13,6 @@ use Phpactor\LanguageServerProtocol\CodeAction;
 use Phpactor\LanguageServerProtocol\Range;
 use Phpactor\LanguageServerProtocol\TextDocumentItem;
 use PHPUnit\Framework\TestCase;
-
-use function Amp\delay;
 
 class CodeActionDiagnosticsProviderTest extends TestCase
 {
@@ -28,12 +28,12 @@ class CodeActionDiagnosticsProviderTest extends TestCase
 
 		$tester->textDocument()->open('file:///foobar', 'barfoo');
 
-		delay(0.01);
+		\Amp\delay(0.01);
 
 		self::assertEquals(2, $tester->transmitter()->count());
 
 		$tester->textDocument()->update('file:///foobar', 'bar');
-		delay(0.01);
+		\Amp\delay(0.01);
 
 		self::assertEquals(5, $tester->transmitter()->count());
 		self::assertEquals(

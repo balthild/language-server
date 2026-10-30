@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\Parser;
 
 use Phpactor\LanguageServer\Core\Rpc\RawMessage;
@@ -8,8 +10,6 @@ use Phpactor\LanguageServer\Core\Server\Parser\Exception\CouldNotParseHeader;
 use Phpactor\LanguageServer\Core\Server\Stream\DuplexStream;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-
-use function json_encode;
 
 final class LspMessageReader implements RequestReader
 {
@@ -47,11 +47,11 @@ final class LspMessageReader implements RequestReader
 
 	private function processChunk(string $chunk): ?RawMessage
 	{
-		for ($i = 0; $i < strlen($chunk); $i++) {
+		for ($i = 0; $i < \strlen($chunk); $i++) {
 			$this->buffer .= $chunk[$i];
 
 			if (null !== ($request = $this->parseRequest())) {
-				$this->overflow = substr($chunk, $i + 1);
+				$this->overflow = \substr($chunk, $i + 1);
 				return $request;
 			}
 		}
@@ -62,9 +62,9 @@ final class LspMessageReader implements RequestReader
 	private function parseRequest(): ?RawMessage
 	{
 		// start by parsing the headers:
-		if ($this->headers === null && substr($this->buffer, -4, 4) === "\r\n\r\n") {
+		if ($this->headers === null && \substr($this->buffer, -4, 4) === "\r\n\r\n") {
 			$this->headers = $this->parseHeaders(
-				substr($this->buffer, 0, -4),
+				\substr($this->buffer, 0, -4),
 			);
 			$this->buffer = '';
 			return null;
@@ -76,15 +76,15 @@ final class LspMessageReader implements RequestReader
 
 		// we finished parsing the headers, now parse the body
 		if (!isset($this->headers[self::HEADER_CONTENT_LENGTH])) {
-			throw new CouldNotParseHeader(sprintf(
+			throw new CouldNotParseHeader(\sprintf(
 				'Header did not contain mandatory Content-Length in "%s"',
-				json_encode($this->headers),
+				\json_encode($this->headers),
 			));
 		}
 
 		$contentLength = (int) $this->headers[self::HEADER_CONTENT_LENGTH];
 
-		if (strlen($this->buffer) !== $contentLength) {
+		if (\strlen($this->buffer) !== $contentLength) {
 			return null;
 		}
 
@@ -97,18 +97,16 @@ final class LspMessageReader implements RequestReader
 
 	private function parseHeaders(string $rawHeaders): array
 	{
-		$lines = explode("\r\n", $rawHeaders);
+		$lines = \explode("\r\n", $rawHeaders);
 		$headers = [];
 
 		foreach ($lines as $line) {
-			$parts = array_map(
-				function ($value) {
-					return trim($value);
-				},
-				explode(':', $line),
+			$parts = \array_map(
+				static fn ($value) => \trim($value),
+				\explode(':', $line),
 			);
-			if (count($parts) != 2) {
-				$this->logger->warning(sprintf(
+			if (\count($parts) !== 2) {
+				$this->logger->warning(\sprintf(
 					'Could not parse header: %s',
 					$line,
 				));
@@ -122,20 +120,20 @@ final class LspMessageReader implements RequestReader
 
 	private function decodeBody(string $string): array
 	{
-		$array = json_decode($string, true);
+		$array = \json_decode($string, true);
 
 		if (null === $array) {
-			throw new CouldNotDecodeBody(sprintf(
+			throw new CouldNotDecodeBody(\sprintf(
 				'Could not decode "%s": %s',
 				$string,
-				json_last_error_msg(),
+				\json_last_error_msg(),
 			));
 		}
 
-		if (!is_array($array)) {
-			throw new CouldNotDecodeBody(sprintf(
+		if (!\is_array($array)) {
+			throw new CouldNotDecodeBody(\sprintf(
 				'Expected an array got "%s"',
-				gettype($array),
+				\gettype($array),
 			));
 		}
 

@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Test\ListenerProvider;
 
 use Psr\EventDispatcher\ListenerProviderInterface;
-use RuntimeException;
 
 class RecordingListenerProvider implements ListenerProviderInterface
 {
@@ -29,14 +30,14 @@ class RecordingListenerProvider implements ListenerProviderInterface
 	 */
 	public function shift(string $type): object
 	{
-		$next = array_shift($this->recieved);
+		$next = \array_shift($this->recieved);
 
 		if (null === $next) {
-			throw new RuntimeException('No more events');
+			throw new \RuntimeException('No more events');
 		}
 
 		if (!$next instanceof $type) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Expected event of type "%s" but got "%s"',
 				$type,
 				$next::class,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Middleware;
 
 use Phpactor\LanguageServer\Core\Middleware\Middleware;
@@ -9,7 +11,6 @@ use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
-use RuntimeException;
 
 class RequestHandlerTest extends TestCase
 {
@@ -17,7 +18,7 @@ class RequestHandlerTest extends TestCase
 
 	public function testExceptionWhenNoMiddlewares(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		(new RequestHandler([]))->handle(new RequestMessage(1, 'foo', []));
 	}
 
@@ -44,9 +45,7 @@ class RequestHandlerTest extends TestCase
 		$middleware1 = $this->prophesize(Middleware::class);
 		$middleware1
 			->process($request, Argument::type(RequestHandler::class))
-			->will(function ($args) {
-				return $args[1]->handle($args[0]);
-			});
+			->will(static fn ($args) => $args[1]->handle($args[0]));
 
 		$response = new ResponseMessage(1, []);
 		$middleware2 = $this->prophesize(Middleware::class);

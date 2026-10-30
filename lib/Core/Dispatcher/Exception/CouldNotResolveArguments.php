@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Dispatcher\Exception;
 
-use RuntimeException;
-
-final class CouldNotResolveArguments extends RuntimeException {}
+final class CouldNotResolveArguments extends \RuntimeException {}

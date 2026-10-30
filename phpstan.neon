@@ -5,7 +5,7 @@ parameters:
 	paths:
 		- lib
 		- example
-		- bin
+		- internal
 
 includes:
 	- phpstan-baseline.neon

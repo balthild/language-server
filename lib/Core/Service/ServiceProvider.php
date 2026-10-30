@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Service;
 
 interface ServiceProvider
@@ -25,7 +27,7 @@ interface ServiceProvider
 	 *     {
 	 *         while (true) {
 	 *             $cancellation->throwIfRequested();
-	 *             delay(1);
+	 *             \Amp\delay(1);
 	 *         }
 	 *     }
 	 * ```

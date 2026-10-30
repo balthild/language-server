@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core;
 
 use Psr\Log\AbstractLogger;
@@ -13,7 +15,7 @@ class TestLogger extends AbstractLogger
 	 */
 	public function log($level, $message, array $context = []): void
 	{
-		$this->messages[] = sprintf('[%s] %s %s', $level, $message, json_encode($context));
+		$this->messages[] = \sprintf('[%s] %s %s', $level, $message, \json_encode($context));
 	}
 
 	public function messages(): array

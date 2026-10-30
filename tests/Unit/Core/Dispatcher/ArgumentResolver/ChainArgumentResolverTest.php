@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Dispatcher\ArgumentResolver;
 
 use Phpactor\LanguageServer\Core\Dispatcher\ArgumentResolver;
@@ -8,7 +10,6 @@ use Phpactor\LanguageServer\Core\Dispatcher\Exception\CouldNotResolveArguments;
 use Phpactor\LanguageServer\Test\ProtocolFactory;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use stdClass;
 
 class ChainArgumentResolverTest extends TestCase
 {
@@ -18,7 +19,7 @@ class ChainArgumentResolverTest extends TestCase
 	{
 		$this->expectException(CouldNotResolveArguments::class);
 		(new ChainArgumentResolver())->resolveArguments(
-			new stdClass(),
+			new \stdClass(),
 			'foo',
 			ProtocolFactory::requestMessage('foo', []),
 		);
@@ -29,12 +30,12 @@ class ChainArgumentResolverTest extends TestCase
 		$resolver1 = $this->prophesize(ArgumentResolver::class);
 		$resolver2 = $this->prophesize(ArgumentResolver::class);
 		$resolver1
-			->resolveArguments(new stdClass(), 'foo', [], [])
+			->resolveArguments(new \stdClass(), 'foo', [], [])
 			->willThrow(new CouldNotResolveArguments('foo'));
-		$resolver1->resolveArguments(new stdClass(), 'foo', [], [])->willReturn(['foo' => 'bar']);
+		$resolver1->resolveArguments(new \stdClass(), 'foo', [], [])->willReturn(['foo' => 'bar']);
 		$this->expectException(CouldNotResolveArguments::class);
 		self::assertEquals(['foo' => 'bar'], (new ChainArgumentResolver())->resolveArguments(
-			new stdClass(),
+			new \stdClass(),
 			'foo',
 			ProtocolFactory::requestMessage('foo', []),
 		));

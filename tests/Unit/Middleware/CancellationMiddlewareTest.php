@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Middleware;
 
 use Amp\PHPUnit\AsyncTestCase;
@@ -33,9 +35,7 @@ class CancellationMiddlewareTest extends AsyncTestCase
 		$response = $this->createMiddleware()->process(
 			new RequestMessage(1, 'foobar', []),
 			new RequestHandler([
-				new ClosureMiddleware(function () {
-					return new ResponseMessage(1, null);
-				}),
+				new ClosureMiddleware(static fn () => new ResponseMessage(1, null)),
 			]),
 		);
 
@@ -47,9 +47,7 @@ class CancellationMiddlewareTest extends AsyncTestCase
 		$response = $this->createMiddleware()->process(
 			new NotificationMessage('foobar', []),
 			new RequestHandler([
-				new ClosureMiddleware(function () {
-					return new ResponseMessage(1, null);
-				}),
+				new ClosureMiddleware(static fn () => new ResponseMessage(1, null)),
 			]),
 		);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Test\LanguageServerTester;
 
 use Phpactor\LanguageServer\Test\LanguageServerTester;
@@ -11,7 +13,6 @@ use Phpactor\LanguageServerProtocol\DidOpenTextDocumentParams;
 use Phpactor\LanguageServerProtocol\DidSaveTextDocumentNotification;
 use Phpactor\LanguageServerProtocol\DidSaveTextDocumentParams;
 use Phpactor\LanguageServerProtocol\TextDocumentContentChangeFullEvent;
-use RuntimeException;
 
 class TextDocumentTester
 {
@@ -33,7 +34,7 @@ class TextDocumentTester
 	public function update(string $uri, string $newText): void
 	{
 		if (!isset(self::$versions[$uri])) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Cannot update document that has not been opened: %s',
 				$uri,
 			));

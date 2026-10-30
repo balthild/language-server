@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Handler;
 
 use Phpactor\LanguageServer\Core\Handler\Handler;
 use Phpactor\LanguageServer\Core\Handler\HandlerMethodResolver;
 use Phpactor\TestUtils\PHPUnit\TestCase;
-use RuntimeException;
 
 class HandlerMethodResolverTest extends TestCase
 {
@@ -18,7 +19,7 @@ class HandlerMethodResolverTest extends TestCase
 
 	public function testThrowsExceptionIfHandlerDidNotDeclaredMethods(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('has not declared');
 
 		$handler = new class implements Handler {
@@ -35,7 +36,7 @@ class HandlerMethodResolverTest extends TestCase
 
 	public function testThrowsExceptionIfHandlerDoesNotHaveMethod(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('does not have');
 
 		$handler = new class implements Handler {

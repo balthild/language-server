@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Service;
 
 use Phpactor\LanguageServer\Core\Diagnostics\ClosureDiagnosticsProvider;
@@ -10,8 +12,6 @@ use Phpactor\LanguageServer\Service\DiagnosticsService;
 use Phpactor\LanguageServer\Test\ProtocolFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-
-use function Amp\delay;
 
 class DiagnosticsServiceTest extends TestCase
 {
@@ -26,14 +26,12 @@ class DiagnosticsServiceTest extends TestCase
 				$tester->clientApi(),
 				new NullLogger(),
 				[
-					new ClosureDiagnosticsProvider(function () {
-						return [
-							ProtocolFactory::diagnostic(
-								ProtocolFactory::range(0, 0, 0, 0),
-								'Foobar is bust',
-							),
-						];
-					}),
+					new ClosureDiagnosticsProvider(static fn () => [
+						ProtocolFactory::diagnostic(
+							ProtocolFactory::range(0, 0, 0, 0),
+							'Foobar is bust',
+						),
+					]),
 				],
 				0,
 			),
@@ -48,17 +46,17 @@ class DiagnosticsServiceTest extends TestCase
 		$tester = $tester->build();
 		$tester->services()->start('diagnostics');
 		$tester->textDocument()->open('file:///foobar', 'barfoo');
-		delay(0.1);
+		\Amp\delay(0.1);
 		$tester->textDocument()->update('file:///foobar', 'barfoo');
-		delay(0.1);
+		\Amp\delay(0.1);
 		$notification = $tester->transmitter()->shift();
-		assert($notification instanceof NotificationMessage);
+		\assert($notification instanceof NotificationMessage);
 		self::assertEquals('textDocument/publishDiagnostics', $notification->method);
 
 		$tester->textDocument()->save('file:///foobar');
-		delay(0.1);
+		\Amp\delay(0.1);
 		$notification = $tester->transmitter()->shift();
-		assert($notification instanceof NotificationMessage);
+		\assert($notification instanceof NotificationMessage);
 		self::assertEquals('textDocument/publishDiagnostics', $notification->method);
 	}
 }

@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Integration\Core\Server;
 
 use Amp\ByteStream\ReadableBuffer;
 use Amp\ByteStream\ReadableIterableStream;
 use Amp\ByteStream\WritableBuffer;
 use Amp\PHPUnit\AsyncTestCase;
-use Closure;
-use Exception;
 use Phpactor\LanguageServer\Core\Dispatcher\Dispatcher\ClosureDispatcher;
 use Phpactor\LanguageServer\Core\Dispatcher\Factory\ClosureDispatcherFactory;
 use Phpactor\LanguageServer\Core\Rpc\Message;
@@ -27,8 +27,6 @@ use PHPUnit\Framework\Assert;
 use Psr\Log\NullLogger;
 use Revolt\EventLoop;
 
-use function Amp\async;
-
 class LanguageServerTest extends AsyncTestCase
 {
 	/**
@@ -38,9 +36,9 @@ class LanguageServerTest extends AsyncTestCase
 	{
 		$response = $this->dispatchRequest(
 			new RequestMessage(1, 'foobar', []),
-			function (Message $message) {
+			static function (Message $message) {
 				if (!$message instanceof RequestMessage) {
-					throw new Exception('not a request');
+					throw new \Exception('not a request');
 				}
 				Assert::assertEquals('foobar', $message->method);
 				return new ResponseMessage(1, [
@@ -61,11 +59,7 @@ class LanguageServerTest extends AsyncTestCase
 		$serializer = new TestMessageSerializer('{"id":3,"foo":"bar"}');
 		$response = $this->dispatchRequest(
 			new RequestMessage(1, 'foobar', []),
-			function (Message $message) {
-				return new ResponseMessage(1, [
-					'foo' => 'bar',
-				]);
-			},
+			static fn (Message $message) => new ResponseMessage(1, ['foo' => 'bar']),
 			$serializer,
 		);
 
@@ -78,7 +72,7 @@ class LanguageServerTest extends AsyncTestCase
 	 */
 	private function dispatchRequest(
 		RequestMessage $request,
-		Closure $handler,
+		\Closure $handler,
 		?MessageSerializer $serializer = new LspMessageSerializer(),
 	): ?RawMessage {
 		$this->setTimeout(1);
@@ -89,7 +83,7 @@ class LanguageServerTest extends AsyncTestCase
 		$output = new WritableBuffer();
 		$stream = new ResourceDuplexStream(
 			new ReadableIterableStream(
-				(function () use ($message) {
+				(static function () use ($message) {
 					yield $message;
 				})(),
 			),
@@ -97,16 +91,14 @@ class LanguageServerTest extends AsyncTestCase
 		);
 
 		$server = new LanguageServer(
-			new ClosureDispatcherFactory(function () use ($handler) {
-				return new ClosureDispatcher($handler);
-			}),
+			new ClosureDispatcherFactory(static fn () => new ClosureDispatcher($handler)),
 			new NullLogger(),
 			new ResourceStreamProvider($stream, new NullLogger()),
 			new PredefinedInitializer(),
 		);
 
-		EventLoop::delay(0.01, function () use ($server): void {
-			async(fn () => $server->shutdown());
+		EventLoop::delay(0.01, static function () use ($server): void {
+			\Amp\async($server->shutdown(...));
 		});
 
 		$server->start();

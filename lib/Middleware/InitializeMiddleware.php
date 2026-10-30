@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Middleware;
 
 use Phpactor\LanguageServer\Core\Handler\CanRegisterCapabilities;
@@ -14,7 +16,6 @@ use Phpactor\LanguageServer\Event\Initialized;
 use Phpactor\LanguageServerProtocol\InitializeResult;
 use Phpactor\LanguageServerProtocol\ServerCapabilities;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use RuntimeException;
 
 class InitializeMiddleware implements Middleware
 {
@@ -51,7 +52,7 @@ class InitializeMiddleware implements Middleware
 		}
 
 		if (true === $this->initialized) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Second initialize request (id: %s) has been recieved. Can only initialize a session once',
 				$request->id,
 			));
@@ -69,7 +70,7 @@ class InitializeMiddleware implements Middleware
 
 		return new ResponseMessage(
 			$request->id,
-			new InitializeResult($serverCapabilities, array_merge([
+			new InitializeResult($serverCapabilities, \array_merge([
 				'name' => 'unspecified',
 				'version' => 'unspecified',
 			], $this->serverInfo)),

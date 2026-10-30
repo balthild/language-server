@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Server\Transmitter;
 
 use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
@@ -24,7 +26,7 @@ class LspMessageFormatterTest extends TestCase
 		$result = $formatter->format($message);
 
 		$this->assertEquals(
-			implode([
+			\implode([
 				'Content-Type: application/vscode-jsonrpc; charset=utf8',
 				"\r\n",
 				'Content-Length: ' . $expectedContentLength,

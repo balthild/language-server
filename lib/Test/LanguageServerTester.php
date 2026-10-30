@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Test;
 
 use Amp\Future;
@@ -17,9 +19,6 @@ use Phpactor\LanguageServer\Test\LanguageServerTester\TextDocumentTester;
 use Phpactor\LanguageServer\Test\LanguageServerTester\WorkspaceTester;
 use Phpactor\LanguageServerProtocol\InitializeParams;
 use Phpactor\LanguageServerProtocol\InitializeResult;
-use RuntimeException;
-
-use function Amp\async;
 
 final class LanguageServerTester
 {
@@ -40,7 +39,8 @@ final class LanguageServerTester
 	public function dispatch(Message $message): Future
 	{
 		/** @var Future<ResponseMessage|null> $future */
-		$future = async(fn (): ?ResponseMessage => $this->dispatcher->dispatch($message));
+		// @mago-expect lint:inline-variable-return
+		$future = \Amp\async(fn (): ?ResponseMessage => $this->dispatcher->dispatch($message));
 
 		return $future;
 	}
@@ -57,7 +57,11 @@ final class LanguageServerTester
 	 */
 	public function request(string $method, $params, $id = null): Future
 	{
-		$requestMessage = new RequestMessage($id ?: uniqid(), $method, $this->normalizeParams($params));
+		$requestMessage = new RequestMessage(
+			$id ?: \uniqid(),
+			$method,
+			$this->normalizeParams($params),
+		);
 
 		return $this->dispatch($requestMessage);
 	}
@@ -82,7 +86,7 @@ final class LanguageServerTester
 		$response = $this->requestAndWait($method, $params);
 
 		if (null === $response) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Expected request to method "%s" to return a response, but it did not!',
 				$method,
 			));
@@ -149,9 +153,9 @@ final class LanguageServerTester
 
 		$result = $response->result;
 		if (!$result instanceof InitializeResult) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Initialize did not return an InitializeResult, got "%s"',
-				get_debug_type($result),
+				\get_debug_type($result),
 			));
 		}
 
@@ -171,17 +175,17 @@ final class LanguageServerTester
 	/**
 	 * Assert the the response is successful.
 	 *
-	 * @throws RuntimeException if not successful.
+	 * @throws \RuntimeException if not successful.
 	 */
 	public function assertSuccess(ResponseMessage $response): void
 	{
 		if ($response->error) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Response has error: %s' . "\n" . '%s',
 				$response->error->message,
-				is_string($response->error->data)
+				\is_string($response->error->data)
 					? $response->error->data
-					: json_encode($response->error->data, JSON_PRETTY_PRINT),
+					: \json_encode($response->error->data, \JSON_PRETTY_PRINT),
 			));
 		}
 	}
@@ -202,15 +206,15 @@ final class LanguageServerTester
 	 */
 	private function normalizeParams($params): array
 	{
-		if (is_array($params)) {
+		if (\is_array($params)) {
 			return $params;
 		}
 
 		$params = $this->messageSerializer->normalize($params);
-		if (!is_array($params)) {
-			throw new RuntimeException(sprintf(
+		if (!\is_array($params)) {
+			throw new \RuntimeException(\sprintf(
 				'Could not normalize params, returned as type %s',
-				gettype($params),
+				\gettype($params),
 			));
 		}
 

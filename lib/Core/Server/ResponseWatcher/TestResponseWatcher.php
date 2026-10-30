@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\ResponseWatcher;
 
 use Amp\Future;
 use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
 use Phpactor\LanguageServer\Core\Server\ResponseWatcher;
-use RuntimeException;
 
 final class TestResponseWatcher implements ResponseWatcher
 {
@@ -26,9 +27,9 @@ final class TestResponseWatcher implements ResponseWatcher
 	 */
 	public function resolveLastResponse($result): void
 	{
-		$id = array_shift($this->requestIds);
+		$id = \array_shift($this->requestIds);
 		if (null === $id) {
-			throw new RuntimeException('No responses left to handle');
+			throw new \RuntimeException('No responses left to handle');
 		}
 		$this->handle(new ResponseMessage($id, $result));
 	}

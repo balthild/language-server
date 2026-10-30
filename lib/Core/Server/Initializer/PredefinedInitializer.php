@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\Initializer;
 
 use Phpactor\LanguageServer\Core\Rpc\Message;

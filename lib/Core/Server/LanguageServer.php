@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server;
 
+use Amp\Future;
 use Phpactor\LanguageServer\Core\Dispatcher\Dispatcher;
 use Phpactor\LanguageServer\Core\Dispatcher\DispatcherFactory;
 use Phpactor\LanguageServer\Core\Rpc\Exception\CouldNotCreateMessage;
@@ -20,11 +23,6 @@ use Phpactor\LanguageServer\Core\Server\Transmitter\ConnectionMessageTransmitter
 use Phpactor\LanguageServer\Core\Server\Transmitter\MessageTransmitter;
 use Psr\Log\LoggerInterface;
 use Revolt\EventLoop;
-use RuntimeException;
-use Throwable;
-
-use function Amp\async;
-use function Amp\Future\awaitAny;
 
 final class LanguageServer
 {
@@ -57,14 +55,14 @@ final class LanguageServer
 	public function run(): void
 	{
 		// Signals are not supported on Windows
-		if (defined('SIGINT')) {
-			EventLoop::onSignal(SIGINT, function (string $watcherId): void {
+		if (\defined('SIGINT')) {
+			EventLoop::onSignal(\SIGINT, function (string $watcherId): void {
 				EventLoop::cancel($watcherId);
-				async(fn () => $this->shutdown());
+				\Amp\async($this->shutdown(...));
 			});
 		}
 
-		EventLoop::setErrorHandler(function (Throwable $error): void {
+		EventLoop::setErrorHandler(function (\Throwable $error): void {
 			if ($error instanceof ShutdownServer) {
 				EventLoop::getDriver()->stop();
 				return;
@@ -85,12 +83,12 @@ final class LanguageServer
 	 * Returns the address of the server if the server is running
 	 * as a socket server, otherwise throws an exception.
 	 *
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 */
 	public function address(): ?string
 	{
 		if (!$this->streamProvider instanceof SocketStreamProvider) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Cannot get address on non-socket stream provider, using "%s"',
 				$this->streamProvider::class,
 			));
@@ -105,11 +103,11 @@ final class LanguageServer
 
 		$futures = [];
 		foreach ($this->connections as $connection) {
-			$futures[] = async(fn () => $connection->stream()->end());
+			$futures[] = \Amp\async(static fn () => $connection->stream()->end());
 		}
 
 		if ($futures) {
-			awaitAny($futures);
+			Future\awaitAny($futures);
 		}
 
 		$this->streamProvider->close();
@@ -118,7 +116,7 @@ final class LanguageServer
 	private function listenForConnections(): void
 	{
 		if ($this->streamProvider instanceof SocketStreamProvider) {
-			$this->logger->info(sprintf(
+			$this->logger->info(\sprintf(
 				'Listening on %s',
 				$this->streamProvider->address(),
 			));
@@ -127,6 +125,7 @@ final class LanguageServer
 		// accept incoming connections (in the case of a TCP server this is
 		// a connection, with a STDIO stream this just returns the stream
 		// immediately)
+		// @mago-expect lint:no-assign-in-condition
 		while ($connection = $this->streamProvider->accept()) {
 			$this->stats->incConnectionCount();
 
@@ -134,7 +133,7 @@ final class LanguageServer
 			// terminate it if necessary
 			$this->connections[$connection->id()] = $connection;
 
-			async(function () use ($connection): void {
+			\Amp\async(function () use ($connection): void {
 				$this->handle($connection);
 				$this->stats->decConnectionCount();
 			});
@@ -174,7 +173,6 @@ final class LanguageServer
 
 			$this->dispatchRequest($transmitter, $dispatcher, $connection, $request);
 		}
-		;
 	}
 
 	private function dispatchRequest(
@@ -183,7 +181,7 @@ final class LanguageServer
 		Connection $connection,
 		Message $request,
 	): void {
-		async(function () use ($transmitter, $request, $dispatcher, $connection): void {
+		\Amp\async(function () use ($transmitter, $request, $dispatcher, $connection): void {
 			try {
 				try {
 					$response = $dispatcher->dispatch($request);

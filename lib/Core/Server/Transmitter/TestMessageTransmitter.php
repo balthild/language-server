@@ -1,17 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\Transmitter;
 
-use Countable;
 use Phpactor\LanguageServer\Core\Rpc\Message;
 use Phpactor\LanguageServer\Core\Rpc\NotificationMessage;
 use Phpactor\LanguageServer\Core\Rpc\RequestMessage;
-use RuntimeException;
 
 final class TestMessageTransmitter implements
 	MessageTransmitter,
 	TestMessageTransmitterStack,
-	Countable
+	\Countable
 {
 	/**
 	 * @var Message[]
@@ -30,7 +30,9 @@ final class TestMessageTransmitter implements
 
 	public function filterByMethod(string $method): self
 	{
-		return new self(...array_filter($this->buffer, function (Message $message) use ($method): bool {
+		return new self(...\array_filter($this->buffer, static function (Message $message) use (
+			$method,
+		): bool {
 			if (!$message instanceof RequestMessage && !$message instanceof NotificationMessage) {
 				return false;
 			}
@@ -41,19 +43,19 @@ final class TestMessageTransmitter implements
 
 	public function shift(): ?Message
 	{
-		return array_shift($this->buffer);
+		return \array_shift($this->buffer);
 	}
 
 	public function shiftNotification(): ?NotificationMessage
 	{
-		$message = array_shift($this->buffer);
+		$message = \array_shift($this->buffer);
 
 		if (null === $message) {
 			return null;
 		}
 
 		if (!$message instanceof NotificationMessage) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Expected NotificationMessage, got "%s"',
 				$message::class,
 			));
@@ -64,14 +66,14 @@ final class TestMessageTransmitter implements
 
 	public function shiftRequest(): ?RequestMessage
 	{
-		$message = array_shift($this->buffer);
+		$message = \array_shift($this->buffer);
 
 		if (null === $message) {
 			return null;
 		}
 
 		if (!$message instanceof RequestMessage) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Expected RequestMessage, got "%s"',
 				$message::class,
 			));
@@ -84,7 +86,7 @@ final class TestMessageTransmitter implements
 	{
 		$message = $this->shiftRequest();
 		if (null === $message) {
-			throw new RuntimeException('No request messages left to shift!');
+			throw new \RuntimeException('No request messages left to shift!');
 		}
 		return $message;
 	}
@@ -99,6 +101,6 @@ final class TestMessageTransmitter implements
 	 */
 	public function count(): int
 	{
-		return count($this->buffer);
+		return \count($this->buffer);
 	}
 }

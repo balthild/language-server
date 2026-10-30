@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Rpc;
 
 use Phpactor\LanguageServer\Core\Rpc\Exception\CouldNotCreateMessage;
@@ -80,7 +82,7 @@ class RequestMessageFactoryTest extends TestCase
 		]);
 		$response = RequestMessageFactory::fromRequest($response);
 		self::assertInstanceOf(ResponseMessage::class, $response);
-		assert($response instanceof ResponseMessage);
+		\assert($response instanceof ResponseMessage);
 		$this->assertEquals(123, $response->error->code);
 	}
 }

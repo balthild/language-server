@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Listener;
 
 use Phpactor\LanguageServer\Core\Server\ClientApi;
@@ -10,8 +12,6 @@ use Phpactor\LanguageServerProtocol\FileSystemWatcher;
 use Phpactor\LanguageServerProtocol\Registration;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Ramsey\Uuid\Uuid;
-
-use function Amp\async;
 
 class DidChangeWatchedFilesListener implements ListenerProviderInterface
 {
@@ -36,24 +36,20 @@ class DidChangeWatchedFilesListener implements ListenerProviderInterface
 	public function registerCapability(Initialized $initialized): void
 	{
 		if (
-			!(
-				$this->clientCapabilities?->workspace?->didChangeWatchedFiles?->dynamicRegistration ?? false
-			)
+			!($this->clientCapabilities->workspace->didChangeWatchedFiles->dynamicRegistration ?? false)
 		) {
 			return;
 		}
 
-		async(function (): void {
+		\Amp\async(function (): void {
 			$this->client
 				->client()
 				->registerCapability(
 					new Registration(
 						Uuid::uuid4()->__toString(),
 						'workspace/didChangeWatchedFiles',
-						new DidChangeWatchedFilesRegistrationOptions(array_map(
-							function (string $glob): FileSystemWatcher {
-								return new FileSystemWatcher($glob);
-							},
+						new DidChangeWatchedFilesRegistrationOptions(\array_map(
+							static fn (string $glob) => new FileSystemWatcher($glob),
 							$this->globPatterns,
 						)),
 					),

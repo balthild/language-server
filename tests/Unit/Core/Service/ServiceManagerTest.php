@@ -1,19 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Service;
 
 use Amp\Cancellation;
 use Amp\CancelledException;
 use Amp\PHPUnit\AsyncTestCase;
-use Exception;
 use Phpactor\LanguageServer\Core\Service\ServiceManager;
 use Phpactor\LanguageServer\Core\Service\ServiceProvider;
 use Phpactor\LanguageServer\Core\Service\ServiceProviders;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
-use RuntimeException;
-
-use function Amp\delay;
 
 class ServiceManagerTest extends AsyncTestCase
 {
@@ -33,7 +31,7 @@ class ServiceManagerTest extends AsyncTestCase
 		$serviceManager = $this->createServiceManager($service);
 		$serviceManager->startAll();
 
-		delay(0);
+		\Amp\delay(0);
 
 		self::assertTrue($service->called);
 	}
@@ -44,7 +42,7 @@ class ServiceManagerTest extends AsyncTestCase
 		$serviceManager = $this->createServiceManager($service);
 		$serviceManager->startAll();
 
-		delay(0);
+		\Amp\delay(0);
 
 		self::assertFalse($service->cancellationToken->isRequested());
 
@@ -61,7 +59,7 @@ class ServiceManagerTest extends AsyncTestCase
 		$serviceManager->start('ping');
 		self::assertTrue($serviceManager->isRunning('ping'));
 
-		delay(0);
+		\Amp\delay(0);
 
 		self::assertTrue($service->called);
 	}
@@ -92,7 +90,7 @@ class ServiceManagerTest extends AsyncTestCase
 		$serviceManager = $this->createServiceManager($service);
 		$serviceManager->start('exception');
 
-		delay(0);
+		\Amp\delay(0);
 
 		self::assertTrue($this->logger->hasErrorThatContains('No'));
 	}
@@ -106,9 +104,9 @@ class ServiceManagerTest extends AsyncTestCase
 
 		$serviceManager->start('daemon');
 
-		delay(0.01);
+		\Amp\delay(0.01);
 		$serviceManager->stop('daemon');
-		delay(0.01);
+		\Amp\delay(0.01);
 
 		self::assertTrue($service->called);
 	}
@@ -125,7 +123,7 @@ class ServiceManagerTest extends AsyncTestCase
 
 	public function testThrowExceptionIfServiceNotReturnPromise(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('has no service method');
 		$service = new PingServiceMissingMethod();
 		$serviceManager = $this->createServiceManager($service);
@@ -164,7 +162,7 @@ class PingService implements ServiceProvider
 	public function ping(?Cancellation $token = null): void
 	{
 		$this->called = true;
-		assert($token !== null);
+		\assert($token !== null);
 		$this->cancellationToken = $token;
 	}
 }
@@ -222,7 +220,7 @@ class DaemonService implements ServiceProvider
 			} catch (CancelledException $cancelled) {
 				break;
 			}
-			delay(0.001);
+			\Amp\delay(0.001);
 		}
 		$this->called = true;
 	}
@@ -244,6 +242,6 @@ class ExceptionThrowingService implements ServiceProvider
 
 	public function exception(?Cancellation $cancel = null): void
 	{
-		throw new Exception('No');
+		throw new \Exception('No');
 	}
 }

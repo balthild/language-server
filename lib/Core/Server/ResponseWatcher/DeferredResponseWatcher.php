@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\ResponseWatcher;
 
 use Amp\DeferredFuture;
 use Amp\Future;
 use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
 use Phpactor\LanguageServer\Core\Server\ResponseWatcher;
-use RuntimeException;
 
 final class DeferredResponseWatcher implements ResponseWatcher
 {
@@ -22,7 +23,7 @@ final class DeferredResponseWatcher implements ResponseWatcher
 			return;
 		}
 
-		throw new RuntimeException(sprintf(
+		throw new \RuntimeException(\sprintf(
 			'Response to unknown request "%s"',
 			$response->id,
 		));

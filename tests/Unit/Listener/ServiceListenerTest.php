@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Listener;
 
 use Phpactor\LanguageServer\Core\Service\ServiceManager;
@@ -9,7 +11,6 @@ use Phpactor\LanguageServer\Listener\ServiceListener;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use stdClass;
 
 class ServiceListenerTest extends TestCase
 {
@@ -44,7 +45,7 @@ class ServiceListenerTest extends TestCase
 
 	public function testDoesNotStartServicesOnOtherEvent(): void
 	{
-		$event = new stdClass();
+		$event = new \stdClass();
 		$this->dispatch($event);
 		$this->serviceManager->startAll()->shouldNotHaveBeenCalled();
 	}
@@ -54,6 +55,5 @@ class ServiceListenerTest extends TestCase
 		foreach ($this->listener->getListenersForEvent($event) as $listener) {
 			$listener($event);
 		}
-		;
 	}
 }

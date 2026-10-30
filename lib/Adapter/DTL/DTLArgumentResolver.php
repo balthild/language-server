@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Adapter\DTL;
 
 use DTL\ArgumentResolver\ArgumentResolver as UpstreamArgumentResolver;

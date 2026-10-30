@@ -51,8 +51,8 @@
 	"autoload-dev": {
 		"psr-4": {
 			"Phpactor\\LanguageServer\\Tests\\": "tests/",
-			"AcmeLs\\": "example/server/acme-ls/",
-			"Dev\\": "dev/"
+			"Phpactor\\LanguageServer\\Internal\\": "internal/",
+			"AcmeLs\\": "example/server/acme-ls/"
 		}
 	},
 	"minimum-stability": "dev",
@@ -62,7 +62,7 @@
 			"./vendor/bin/phpunit",
 			"./vendor/bin/phpstan --memory-limit=-1 analyze",
 			"dprint fmt",
-			"php ./bin/scan_single_param.php"
+			"php ./internal/bin/scan-single-param.php"
 		]
 	},
 	"config": {

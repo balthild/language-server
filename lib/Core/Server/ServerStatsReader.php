@@ -1,12 +1,12 @@
 <?php
 
-namespace Phpactor\LanguageServer\Core\Server;
+declare(strict_types=1);
 
-use DateInterval;
+namespace Phpactor\LanguageServer\Core\Server;
 
 interface ServerStatsReader
 {
-	public function uptime(): DateInterval;
+	public function uptime(): \DateInterval;
 
 	public function connectionCount(): int;
 

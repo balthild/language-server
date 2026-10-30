@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\Client;
 
-use InvalidArgumentException;
 use Phpactor\LanguageServer\Core\Server\RpcClient;
 use Phpactor\LanguageServer\WorkDoneProgress\WorkDoneToken;
 
@@ -62,13 +63,13 @@ final class WorkDoneProgressClient
 	private static function assertIsValidPercentage(?int $percentage): void
 	{
 		if (!(null === $percentage || 0 <= $percentage && $percentage <= 100)) {
-			throw new InvalidArgumentException('The percentage must be an integer comprised between 0 and 100.');
+			throw new \InvalidArgumentException('The percentage must be an integer comprised between 0 and 100.');
 		}
 	}
 
 	private function notify(WorkDoneToken $token, array $value): void
 	{
-		assert(in_array($value['kind'], ['begin', 'report', 'end']));
+		\assert(\in_array($value['kind'], ['begin', 'report', 'end'], strict: true));
 
 		$this->client->notification('$/progress', [
 			'token' => (string) $token,

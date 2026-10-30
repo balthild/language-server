@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Handler;
 
 use Amp\Cancellation;
@@ -11,22 +13,16 @@ use Phpactor\LanguageServer\Core\Handler\Handlers;
 use Phpactor\LanguageServer\Core\Rpc\NotificationMessage;
 use Phpactor\LanguageServer\Core\Rpc\RequestMessage;
 use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
-use RuntimeException;
-
-use function Amp\async;
-use function Amp\delay;
 
 class HandlerMethodRunnerTest extends AsyncTestCase
 {
 	public function testExceptionIfNotRequestOrNotification(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('Message must either be a ');
 
 		$runner = $this->createRunner([
-			new ClosureHandler('foobar', function () {
-				return 'foobar';
-			}),
+			new ClosureHandler('foobar', static fn () => 'foobar'),
 		]);
 		$runner->dispatch(
 			new ResponseMessage(1, 'foobar'),
@@ -36,7 +32,7 @@ class HandlerMethodRunnerTest extends AsyncTestCase
 	public function testReturnsNullIfMessageIsANotification(): void
 	{
 		$dispatcher = $this->createRunner([
-			new ClosureHandler('foobar', function (): void {}),
+			new ClosureHandler('foobar', static function (): void {}),
 		]);
 
 		$response = $dispatcher->dispatch(
@@ -49,9 +45,7 @@ class HandlerMethodRunnerTest extends AsyncTestCase
 	public function testReturnsValueFromHandler(): void
 	{
 		$dispatcher = $this->createRunner([
-			new ClosureHandler('foobar', function (string $bar) {
-				return 'foobar: ' . $bar;
-			}),
+			new ClosureHandler('foobar', static fn (string $bar) => 'foobar: ' . $bar),
 		]);
 
 		$response = $dispatcher->dispatch(
@@ -66,16 +60,16 @@ class HandlerMethodRunnerTest extends AsyncTestCase
 	public function testToleratesTryingToCancelNonRunningRequest(): void
 	{
 		$dispatcher = $this->createRunner([
-			new ClosureHandler('foobar', function (): void {
-				delay(0.01);
+			new ClosureHandler('foobar', static function (): void {
+				\Amp\delay(0.01);
 			}),
 		]);
 
-		async(fn () => $dispatcher->dispatch(
+		\Amp\async(static fn () => $dispatcher->dispatch(
 			new RequestMessage(1, 'foobar', ['bar' => 'foo']),
 		));
 
-		delay(0.005);
+		\Amp\delay(0.005);
 
 		$dispatcher->cancelRequest(2);
 		$this->addToAssertionCount(1);
@@ -86,17 +80,17 @@ class HandlerMethodRunnerTest extends AsyncTestCase
 		$this->expectException(CancelledException::class);
 
 		$dispatcher = $this->createRunner([
-			new ClosureHandler('foobar', function (string $bar, Cancellation $token): void {
-				delay(0.1);
+			new ClosureHandler('foobar', static function (string $bar, Cancellation $token): void {
+				\Amp\delay(0.1);
 				$token->throwIfRequested();
 			}),
 		]);
 
-		$response = async(fn () => $dispatcher->dispatch(
+		$response = \Amp\async(static fn () => $dispatcher->dispatch(
 			new RequestMessage(1, 'foobar', ['bar' => 'foo']),
 		));
 
-		delay(0);
+		\Amp\delay(0);
 		$dispatcher->cancelRequest(1);
 
 		$response->await();

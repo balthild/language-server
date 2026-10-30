@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Handler;
 
 use Amp\DeferredCancellation;
@@ -11,7 +13,6 @@ use Phpactor\LanguageServer\Core\Rpc\RequestMessage;
 use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use RuntimeException;
 
 final class HandlerMethodRunner implements MethodRunner
 {
@@ -30,7 +31,7 @@ final class HandlerMethodRunner implements MethodRunner
 	public function dispatch(Message $request): ?ResponseMessage
 	{
 		if (!$request instanceof NotificationMessage && !$request instanceof RequestMessage) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Message must either be a Notification or a Request, got "%s"',
 				$request::class,
 			));
@@ -46,7 +47,7 @@ final class HandlerMethodRunner implements MethodRunner
 			$this->cancellations[$request->id] = $cancellationTokenSource;
 		}
 
-		$args = array_values($this->argumentResolver->resolveArguments($handler, $method, $request));
+		$args = \array_values($this->argumentResolver->resolveArguments($handler, $method, $request));
 		$args[] = $cancellationTokenSource->getCancellation();
 
 		$result = $handler->$method(...$args);
@@ -64,16 +65,16 @@ final class HandlerMethodRunner implements MethodRunner
 	public function cancelRequest($id): void
 	{
 		if (!isset($this->cancellations[$id])) {
-			$this->logger->warning(sprintf(
+			$this->logger->warning(\sprintf(
 				'Trying to cancel non-running request "%s", running requests: "%s"',
 				$id,
-				implode('", "', array_keys($this->cancellations)),
+				\implode('", "', \array_keys($this->cancellations)),
 			));
 			return;
 		}
 
 		$tokenSource = $this->cancellations[$id];
-		assert($tokenSource instanceof DeferredCancellation);
+		\assert($tokenSource instanceof DeferredCancellation);
 		$tokenSource->cancel();
 	}
 }

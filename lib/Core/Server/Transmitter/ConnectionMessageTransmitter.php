@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\Transmitter;
 
 use Phpactor\LanguageServer\Core\Rpc\Message;
@@ -18,7 +20,7 @@ final class ConnectionMessageTransmitter implements MessageTransmitter
 	{
 		$responseBody = $this->formatter->format($response);
 
-		foreach (str_split($responseBody, self::WRITE_CHUNK_SIZE) as $chunk) {
+		foreach (\str_split($responseBody, self::WRITE_CHUNK_SIZE) as $chunk) {
 			$this->connection->stream()->write($chunk);
 		}
 	}

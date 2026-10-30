@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Service;
 
 use Phpactor\LanguageServer\Core\Service\Exception\UnknownService;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Test\LanguageServerTester;
 
 use Phpactor\LanguageServer\Test\LanguageServerTester;
@@ -17,7 +19,7 @@ class ServicesTester
 	{
 		$response = $this->tester->mustRequestAndWait('phpactor/service/running', []);
 		$running = $response->result;
-		if (!is_array($running)) {
+		if (!\is_array($running)) {
 			return [];
 		}
 		return $running;

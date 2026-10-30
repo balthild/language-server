@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 use Phpactor\LanguageServer\Adapter\Psr\AggregateEventDispatcher;
 use Phpactor\LanguageServer\Core\CodeAction\AggregateCodeActionProvider;
 use Phpactor\LanguageServer\Core\Command\CommandDispatcher;
@@ -64,7 +66,7 @@ $type = $cliOptions['t'] ?? $cliOptions['type'] ?? 'tcp';
 $address = $cliOptions['a'] ?? $cliOptions['address'] ?? null;
 
 if ($type === 'tcp' && !is_string($address)) {
-	throw new RuntimeException('Address should be a string');
+	throw new \RuntimeException('Address should be a string');
 }
 
 $in = fopen('php://stdin', 'r');

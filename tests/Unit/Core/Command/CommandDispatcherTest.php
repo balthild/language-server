@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Command;
 
 use Phpactor\LanguageServer\Core\Command\Command;
 use Phpactor\LanguageServer\Core\Command\CommandDispatcher;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class CommandDispatcherTest extends TestCase
 {
@@ -27,7 +28,7 @@ class CommandDispatcherTest extends TestCase
 
 	public function testExceptionWhenCommandNotFound(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('Command "barfoo" not found');
 
 		$this->createDispatcher([
@@ -39,7 +40,7 @@ class CommandDispatcherTest extends TestCase
 
 	public function testExceptionWhenCommandNotInvokable(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('not invokable');
 		$this->createDispatcher([
 			'command' => new class implements Command {},

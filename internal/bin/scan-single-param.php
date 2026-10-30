@@ -10,7 +10,7 @@ declare(strict_types=1);
  * Read-only: this script never writes to the scanned files.
  *
  * Usage:
- *   php scan_single_param.php [--print-width=N] [--tab-width=N] [paths...]
+ *   php scan-single-param.php [--print-width=N] [--tab-width=N] [paths...]
  *
  * With no paths, every PHP file tracked by git (plus untracked, non-ignored
  * ones) is scanned.
@@ -64,7 +64,7 @@ $multiParamHits = [];
 $scanned = 0;
 
 foreach ($files as $file) {
-	$source = @file_get_contents($file);
+	$source = file_get_contents($file);
 
 	if ($source === false) {
 		fwrite(STDERR, "cannot read: {$file}\n");
@@ -117,7 +117,7 @@ function discoverFiles(): array
  */
 function scanSource(string $source, int $printWidth, int $tabWidth): array
 {
-	$tokens = @token_get_all($source);
+	$tokens = token_get_all($source);
 	$entries = [];
 	$offset = 0;
 	$line = 1;

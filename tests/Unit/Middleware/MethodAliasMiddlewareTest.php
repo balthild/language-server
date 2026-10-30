@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Middleware;
 
 use Amp\PHPUnit\AsyncTestCase;
@@ -31,7 +33,7 @@ class MethodAliasMiddlewareTest extends AsyncTestCase
 		])->process(
 			new NotificationMessage('foobar'),
 			new RequestHandler([
-				new ClosureMiddleware(function (Message $message, RequestHandler $handler) {
+				new ClosureMiddleware(static function (Message $message, RequestHandler $handler) {
 					self::assertEquals('barfoo', $message->method);
 					return null;
 				}),
@@ -46,7 +48,7 @@ class MethodAliasMiddlewareTest extends AsyncTestCase
 		])->process(
 			new NotificationMessage('foobar'),
 			new RequestHandler([
-				new ClosureMiddleware(function (Message $message, RequestHandler $handler) {
+				new ClosureMiddleware(static function (Message $message, RequestHandler $handler) {
 					self::assertEquals('foobar', $message->method);
 					return null;
 				}),

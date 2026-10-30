@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Test;
 
 use Phpactor\LanguageServer\Core\Rpc\NotificationMessage;
@@ -46,7 +48,7 @@ final class ProtocolFactory
 
 	public static function requestMessage(string $method, array $params): RequestMessage
 	{
-		return new RequestMessage(uniqid(), $method, $params);
+		return new RequestMessage(\uniqid(), $method, $params);
 	}
 
 	public static function notificationMessage(string $method, array $params): NotificationMessage

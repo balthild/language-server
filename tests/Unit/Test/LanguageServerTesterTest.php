@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Test;
 
 use Amp\Cancellation;
@@ -14,8 +16,6 @@ use Phpactor\LanguageServer\Test\ProtocolFactory;
 use Phpactor\LanguageServerProtocol\InitializeParams;
 use Phpactor\LanguageServerProtocol\ServerCapabilities;
 use PHPUnit\Framework\TestCase;
-
-use function Amp\delay;
 
 class LanguageServerTesterTest extends TestCase
 {
@@ -120,7 +120,7 @@ class LanguageServerTesterTest extends TestCase
 		$builder->enableTextDocuments();
 		$builder->addServiceProvider(new PingProvider($builder->clientApi()));
 		$builder->addHandler(
-			new ClosureHandler('foobar', function (Cancellation $token) use ($builder) {
+			new ClosureHandler('foobar', static function (Cancellation $token) use ($builder) {
 				$builder->transmitter()->transmit(new NotificationMessage(self::SUCCESS, [
 					'message' => self::SUCCESS,
 				]));
@@ -129,8 +129,8 @@ class LanguageServerTesterTest extends TestCase
 			}),
 		);
 		$builder->addHandler(
-			new ClosureHandler('delay_and_check_cancellation', function (Cancellation $token) {
-				delay(0.01);
+			new ClosureHandler('delay_and_check_cancellation', static function (Cancellation $token) {
+				\Amp\delay(0.01);
 				$token->throwIfRequested();
 
 				return self::SUCCESS;
@@ -150,7 +150,7 @@ class LanguageServerTesterTest extends TestCase
 		$notification = $tester->transmitter()->shift();
 		self::assertNotNull($notification, 'Notication was sent');
 		self::assertInstanceOf(NotificationMessage::class, $notification);
-		assert($notification instanceof NotificationMessage);
+		\assert($notification instanceof NotificationMessage);
 		self::assertEquals(self::SUCCESS, $notification->params['message']);
 	}
 }

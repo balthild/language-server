@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer;
 
 use Phpactor\LanguageServer\Adapter\DTL\DTLArgumentResolver;

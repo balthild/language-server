@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\StreamProvider;
 
 use Amp\Socket\ServerSocket;
@@ -21,7 +23,7 @@ final class SocketStreamProvider implements StreamProvider
 
 		$address = (string) $socket->getRemoteAddress();
 
-		$this->logger->info(sprintf('Accepted connection from "%s"', $address));
+		$this->logger->info(\sprintf('Accepted connection from "%s"', $address));
 
 		return new Connection($address, new SocketDuplexStream($socket));
 	}

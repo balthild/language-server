@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Diagnostics;
 
 use Amp\DeferredCancellation;
 use Amp\PHPUnit\AsyncTestCase;
-use Exception;
 use Phpactor\LanguageServer\Core\Diagnostics\ClosureDiagnosticsProvider;
 use Phpactor\LanguageServer\Core\Diagnostics\DiagnosticsEngine;
 use Phpactor\LanguageServer\Core\Rpc\NotificationMessage;
@@ -12,9 +13,6 @@ use Phpactor\LanguageServer\LanguageServerTesterBuilder;
 use Phpactor\LanguageServer\Test\ProtocolFactory;
 use Phpactor\LanguageServerProtocol\TextDocumentItem;
 use Psr\Log\NullLogger;
-
-use function Amp\async;
-use function Amp\delay;
 
 class DiagnosticsEngineTest extends AsyncTestCase
 {
@@ -24,13 +22,13 @@ class DiagnosticsEngineTest extends AsyncTestCase
 		$engine = $this->createEngine($tester, 0, 0);
 
 		$token = new DeferredCancellation();
-		async(fn () => $engine->run($token->getCancellation()));
+		\Amp\async(static fn () => $engine->run($token->getCancellation()));
 
 		$engine->enqueue(
 			ProtocolFactory::textDocumentItem('file:///foobar', 'foobar'),
 		);
 
-		delay(0.01);
+		\Amp\delay(0.01);
 
 		$token->cancel();
 
@@ -55,13 +53,13 @@ class DiagnosticsEngineTest extends AsyncTestCase
 		$engine = $this->createEngine($tester, 0, 0);
 
 		$token = new DeferredCancellation();
-		async(fn () => $engine->run($token->getCancellation()));
+		\Amp\async(static fn () => $engine->run($token->getCancellation()));
 
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', 'foobar'));
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///barfoo', 'foobar'));
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///bazbar', 'foobar'));
 
-		delay(0.001);
+		\Amp\delay(0.001);
 
 		$token->cancel();
 
@@ -75,13 +73,13 @@ class DiagnosticsEngineTest extends AsyncTestCase
 		$engine = $this->createEngine($tester, 1, 0);
 
 		$token = new DeferredCancellation();
-		async(fn () => $engine->run($token->getCancellation()));
+		\Amp\async(static fn () => $engine->run($token->getCancellation()));
 
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', 'foobar'));
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', 'foobar'));
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', 'foobar'));
 
-		delay(0.01);
+		\Amp\delay(0.01);
 
 		$token->cancel();
 
@@ -95,13 +93,13 @@ class DiagnosticsEngineTest extends AsyncTestCase
 		$engine = $this->createEngine($tester, 5, 10);
 
 		$token = new DeferredCancellation();
-		async(fn () => $engine->run($token->getCancellation()));
+		\Amp\async(static fn () => $engine->run($token->getCancellation()));
 
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', 'bazboo'));
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///barfoo', 'foobar'));
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///bazbar', 'foobar'));
 
-		delay(0.1);
+		\Amp\delay(0.1);
 
 		$token->cancel();
 
@@ -115,26 +113,22 @@ class DiagnosticsEngineTest extends AsyncTestCase
 			$tester->clientApi(),
 			new NullLogger(),
 			[
-				new ClosureDiagnosticsProvider(function (TextDocumentItem $item) {
-					return [
-						ProtocolFactory::diagnostic(ProtocolFactory::range(0, 0, 0, 0), 'Foobar is broken'),
-					];
-				}),
-				new ClosureDiagnosticsProvider(function (TextDocumentItem $item) {
-					return [
-						ProtocolFactory::diagnostic(ProtocolFactory::range(0, 0, 0, 0), 'Barfoo is broken'),
-					];
-				}),
+				new ClosureDiagnosticsProvider(static fn (TextDocumentItem $item) => [
+					ProtocolFactory::diagnostic(ProtocolFactory::range(0, 0, 0, 0), 'Foobar is broken'),
+				]),
+				new ClosureDiagnosticsProvider(static fn (TextDocumentItem $item) => [
+					ProtocolFactory::diagnostic(ProtocolFactory::range(0, 0, 0, 0), 'Barfoo is broken'),
+				]),
 			],
 			10,
 		);
 
 		$token = new DeferredCancellation();
-		async(fn () => $engine->run($token->getCancellation()));
+		\Amp\async(static fn () => $engine->run($token->getCancellation()));
 
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', 'bazboo'));
 
-		delay(0.1);
+		\Amp\delay(0.1);
 
 		self::assertEquals(3, $tester->transmitter()->count());
 	}
@@ -146,24 +140,24 @@ class DiagnosticsEngineTest extends AsyncTestCase
 			$tester->clientApi(),
 			new NullLogger(),
 			[
-				new ClosureDiagnosticsProvider(function (TextDocumentItem $item): void {
-					throw new Exception('oh dear');
+				new ClosureDiagnosticsProvider(static function (TextDocumentItem $item): void {
+					throw new \Exception('oh dear');
 				}),
 			],
 			10,
 		);
 
 		$token = new DeferredCancellation();
-		async(fn () => $engine->run($token->getCancellation()));
+		\Amp\async(static fn () => $engine->run($token->getCancellation()));
 
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', 'bazboo'));
 
-		delay(0.1);
+		\Amp\delay(0.1);
 
 		self::assertEquals(2, $tester->transmitter()->count());
 		$notification = $tester->transmitter()->shiftNotification();
 		$notification = $tester->transmitter()->shiftNotification();
-		assert($notification instanceof NotificationMessage);
+		\assert($notification instanceof NotificationMessage);
 		self::assertEquals('window/showMessage', $notification->method);
 		self::assertStringContainsString('oh dear', (string) ($notification->params['message'] ?? ''));
 	}
@@ -183,20 +177,20 @@ class DiagnosticsEngineTest extends AsyncTestCase
 		$engine = $this->createEngine($tester, 5, 0, $lastDocument);
 
 		$token = new DeferredCancellation();
-		async(fn () => $engine->run($token->getCancellation()));
-		delay(0.001);
+		\Amp\async(static fn () => $engine->run($token->getCancellation()));
+		\Amp\delay(0.001);
 
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', '1', version: 1));
-		delay(0.001);
+		\Amp\delay(0.001);
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', '2', version: 2));
-		delay(0.01);
+		\Amp\delay(0.01);
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', '3', version: 3));
-		delay(0.001);
+		\Amp\delay(0.001);
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', '4', version: 4));
-		delay(0.001);
+		\Amp\delay(0.001);
 		$engine->enqueue(ProtocolFactory::textDocumentItem('file:///foobar', '5', version: 5));
 
-		delay(0.1);
+		\Amp\delay(0.1);
 
 		$token->cancel();
 
@@ -213,12 +207,12 @@ class DiagnosticsEngineTest extends AsyncTestCase
 			$tester->clientApi(),
 			new NullLogger(),
 			[
-				new ClosureDiagnosticsProvider(function (TextDocumentItem $item) use (
+				new ClosureDiagnosticsProvider(static function (TextDocumentItem $item) use (
 					$delayMs,
 					&$lastDocument,
 				) {
 					if ($delayMs) {
-						delay($delayMs / 1000);
+						\Amp\delay($delayMs / 1000);
 					}
 					$lastDocument = $item->text;
 

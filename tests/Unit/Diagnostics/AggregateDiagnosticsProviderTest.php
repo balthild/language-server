@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Diagnostics;
 
 use Amp\DeferredCancellation;
@@ -64,8 +66,6 @@ class AggregateDiagnosticsProviderTest extends TestCase
 		array $diagnostics,
 		string $name = 'test',
 	): ClosureDiagnosticsProvider {
-		return new ClosureDiagnosticsProvider(function () use ($diagnostics) {
-			return $diagnostics;
-		}, $name);
+		return new ClosureDiagnosticsProvider(static fn () => $diagnostics, $name);
 	}
 }

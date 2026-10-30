@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\WorkDoneProgress;
 
 use Phpactor\LanguageServer\Core\Server\Client\MessageClient;
@@ -41,7 +43,7 @@ final class MessageProgressNotifier implements ProgressNotifier
 		?int $percentage = null,
 		?bool $cancellable = null,
 	): void {
-		$this->api->info(sprintf('%s - %d%%', $message, $percentage));
+		$this->api->info(\sprintf('%s - %d%%', $message, $percentage));
 	}
 
 	public function end(WorkDoneToken $token, ?string $message = null): void

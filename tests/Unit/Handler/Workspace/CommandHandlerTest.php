@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Handler\Workspace;
 
 use Phpactor\LanguageServer\Core\Command\Command;

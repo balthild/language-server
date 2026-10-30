@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Handler;
 
 use Phpactor\LanguageServer\Core\Handler\Handler;
@@ -45,7 +47,7 @@ class HandlersTest extends TestCase
 		$handlers->merge($this->create([$this->handler2->reveal()]));
 
 		$this->assertCount(2, $handlers);
-		$this->assertEquals(['foobar', 'barfoo'], array_keys($handlers->methods()));
+		$this->assertEquals(['foobar', 'barfoo'], \array_keys($handlers->methods()));
 	}
 
 	private function create(array $handlers): Handlers

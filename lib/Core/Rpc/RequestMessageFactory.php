@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Rpc;
 
 use DTL\Invoke\Invoke;
 use Phpactor\LanguageServer\Core\Rpc\Exception\CouldNotCreateMessage;
-use Throwable;
 
 final class RequestMessageFactory
 {
@@ -12,7 +13,7 @@ final class RequestMessageFactory
 	{
 		try {
 			return self::doFromRequest($request);
-		} catch (Throwable $error) {
+		} catch (\Throwable $error) {
 			throw new CouldNotCreateMessage($error->getMessage(), 0, $error);
 		}
 	}
@@ -22,8 +23,9 @@ final class RequestMessageFactory
 		$body = $request->body();
 		unset($body['jsonrpc']);
 
-		if (array_key_exists('result', $body) || array_key_exists('error', $body)) {
-			$body['result'] = $body['result'] ?? null;
+		if (\array_key_exists('result', $body) || \array_key_exists('error', $body)) {
+			$body['result'] ??= null;
+
 			if ($body['error'] ?? null) {
 				$body['error'] = Invoke::new(ResponseError::class, $body['error']);
 			}
@@ -34,7 +36,7 @@ final class RequestMessageFactory
 		/**
 		 * @phpstan-ignore-next-line
 		 */
-		if (!isset($body['id']) || is_null($body['id'])) {
+		if (!isset($body['id']) || \is_null($body['id'])) {
 			unset($body['id']);
 			return Invoke::new(NotificationMessage::class, $body);
 		}

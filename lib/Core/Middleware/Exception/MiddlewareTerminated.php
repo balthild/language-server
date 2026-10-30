@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Middleware\Exception;
 
-use RuntimeException;
-
-final class MiddlewareTerminated extends RuntimeException {}
+final class MiddlewareTerminated extends \RuntimeException {}

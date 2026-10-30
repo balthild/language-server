@@ -102,8 +102,6 @@ this request and continue serving others. Anything that waits on I/O (including
 
     <?php
 
-    use function Amp\delay;
-
     class MyHandler implements Handler
     {
         //...
@@ -115,7 +113,7 @@ this request and continue serving others. Anything that waits on I/O (including
 
             foreach($this->magicCompletionProvider->provideCompletions($params) as $completion) {
                 $completionItems[] = $completion;
-                delay(0.001);
+                \Amp\delay(0.001);
             }
 
             return $completionItems;
@@ -133,16 +131,15 @@ If you want to run several things concurrently you can start them with
 
     <?php
 
-    use function Amp\async;
-    use function Amp\Future\await;
+    use Amp\Future;
 
     $futures = [];
 
     foreach ($providers as $provider) {
-        $futures[] = async(fn () => $provider->provide($params));
+        $futures[] = \Amp\async(fn () => $provider->provide($params));
     }
 
-    [$errors, $results] = await($futures);
+    [$errors, $results] = Future\await($futures);
 
 Cancellation
 ------------
@@ -156,7 +153,6 @@ if the request is cancelled as follows:
 
     use Amp\Cancellation;
     use Amp\CancelledException;
-    use function Amp\delay;
 
     class MyHandler implements Handler
     {
@@ -169,7 +165,7 @@ if the request is cancelled as follows:
 
             foreach($this->magicCompletionProvider->provideCompletions($params) as $completion) {
                 $completionItems[] = $completion;
-                delay(0.001);
+                \Amp\delay(0.001);
 
                 try {
                     $cancellation?->throwIfRequested();

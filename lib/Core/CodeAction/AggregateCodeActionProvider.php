@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\CodeAction;
 
 use Amp\Cancellation;
 use Phpactor\LanguageServerProtocol\Range;
 use Phpactor\LanguageServerProtocol\TextDocumentItem;
-
-use function Amp\delay;
 
 class AggregateCodeActionProvider implements CodeActionProvider
 {
@@ -30,13 +30,13 @@ class AggregateCodeActionProvider implements CodeActionProvider
 	): array {
 		$actions = [];
 		foreach ($this->providers as $provider) {
-			$actions = array_merge($actions, $provider->provideActionsFor(
+			$actions = \array_merge($actions, $provider->provideActionsFor(
 				$textDocument,
 				$range,
 				$cancel,
 			));
 
-			delay(0);
+			\Amp\delay(0);
 
 			$cancel?->throwIfRequested();
 		}
@@ -49,22 +49,17 @@ class AggregateCodeActionProvider implements CodeActionProvider
 	 */
 	public function kinds(): array
 	{
-		return array_values(
-			array_reduce(
-				$this->providers,
-				function (array $kinds, CodeActionProvider $provider): array {
-					return array_merge(
-						$kinds,
-						(array) array_combine($provider->kinds(), $provider->kinds()),
-					);
-				},
-				[],
-			),
-		);
+		$kinds = [];
+		foreach ($this->providers as $provider) {
+			foreach ($provider->kinds() as $kind) {
+				$kinds[$kind] = true;
+			}
+		}
+		return \array_keys($kinds);
 	}
 
 	public function describe(): string
 	{
-		return sprintf('aggregate code action proivder with %s providers', count($this->providers));
+		return \sprintf('aggregate code action proivder with %s providers', \count($this->providers));
 	}
 }

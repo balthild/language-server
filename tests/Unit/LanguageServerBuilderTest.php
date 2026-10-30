@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit;
 
 use Phpactor\LanguageServer\Core\Dispatcher\Factory\ClosureDispatcherFactory;
@@ -11,7 +13,8 @@ class LanguageServerBuilderTest extends TestCase
 {
 	public function testBuild(): void
 	{
-		$server = LanguageServerBuilder::create(new ClosureDispatcherFactory(function (): void {}))
+		$factory = new ClosureDispatcherFactory(static function (): void {});
+		$server = LanguageServerBuilder::create($factory)
 			->tcpServer('127.0.0.1:8888')
 			->build();
 

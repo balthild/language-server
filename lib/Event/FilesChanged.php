@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Event;
 
 use Phpactor\LanguageServerProtocol\FileEvent;
-use RuntimeException;
 
 final class FilesChanged
 {
@@ -27,17 +28,18 @@ final class FilesChanged
 
 	public function byType(int $type): self
 	{
-		return new self(...array_filter($this->events, function (FileEvent $event) use ($type): bool {
-			return $event->type === $type;
-		}));
+		return new self(...\array_filter(
+			$this->events,
+			static fn (FileEvent $event) => $event->type === $type,
+		));
 	}
 
 	public function first(): FileEvent
 	{
-		$first = reset($this->events);
+		$first = \reset($this->events);
 
 		if (false === $first) {
-			throw new RuntimeException('No file events, cannot get the first one');
+			throw new \RuntimeException('No file events, cannot get the first one');
 		}
 
 		return $first;

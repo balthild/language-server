@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AcmeLs;
 
 use Phpactor\LanguageServer\Adapter\Psr\AggregateEventDispatcher;

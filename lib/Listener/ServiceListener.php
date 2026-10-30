@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Listener;
 
 use Phpactor\LanguageServer\Core\Service\ServiceManager;

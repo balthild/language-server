@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Listener;
 
 use Amp\PHPUnit\AsyncTestCase;
@@ -14,8 +16,6 @@ use Phpactor\LanguageServerProtocol\DidChangeWatchedFilesRegistrationOptions;
 use Phpactor\LanguageServerProtocol\FileSystemWatcher;
 use Phpactor\LanguageServerProtocol\Registration;
 use Phpactor\LanguageServerProtocol\WorkspaceClientCapabilities;
-
-use function Amp\delay;
 
 class DidChangeWatchedFilesListenerTest extends AsyncTestCase
 {
@@ -82,9 +82,7 @@ class DidChangeWatchedFilesListenerTest extends AsyncTestCase
 			$listener($event);
 		}
 
-		;
-
 		// the registration request is sent from a fiber
-		delay(0);
+		\Amp\delay(0);
 	}
 }

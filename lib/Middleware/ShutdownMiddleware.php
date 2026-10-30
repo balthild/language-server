@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Middleware;
 
 use Phpactor\LanguageServer\Adapter\Psr\NullEventDispatcher;
@@ -14,8 +16,6 @@ use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
 use Phpactor\LanguageServer\Core\Server\Exception\ExitSession;
 use Phpactor\LanguageServer\Event\WillShutdown;
 use Psr\EventDispatcher\EventDispatcherInterface;
-
-use function Amp\delay;
 
 final class ShutdownMiddleware implements Middleware
 {
@@ -47,7 +47,7 @@ final class ShutdownMiddleware implements Middleware
 					$request->id,
 					null,
 					new ResponseError(
-						ErrorCodes::InvalidRequest,
+						ErrorCodes::INVALID_REQUEST,
 						'Server is currently shutting down, cannot serve requests',
 					),
 				);
@@ -65,7 +65,7 @@ final class ShutdownMiddleware implements Middleware
 	public function shutdown(RequestMessage $request): ResponseMessage
 	{
 		$this->eventDispatcher->dispatch(new WillShutdown());
-		delay($this->gracePeriod / 1000);
+		\Amp\delay($this->gracePeriod / 1000);
 
 		return new ResponseMessage(
 			$request->id,

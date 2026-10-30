@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Handler;
 
-use RuntimeException;
-
-final class HandlerNotFound extends RuntimeException {}
+final class HandlerNotFound extends \RuntimeException {}

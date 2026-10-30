@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Middleware;
 
 use Amp\PHPUnit\AsyncTestCase;
@@ -19,7 +21,6 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use RuntimeException;
 
 class InitializeMiddlewareTest extends AsyncTestCase
 {
@@ -60,7 +61,7 @@ class InitializeMiddlewareTest extends AsyncTestCase
 
 	public function testExceptionIfInitializedTwice(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('Second initialize');
 
 		$middleware = $this->createMiddleware();
@@ -93,7 +94,7 @@ class InitializeMiddlewareTest extends AsyncTestCase
 			new RequestHandler(),
 		);
 		self::assertInstanceOf(ResponseMessage::class, $response);
-		assert($response instanceof ResponseMessage);
+		\assert($response instanceof ResponseMessage);
 		self::assertInstanceOf(InitializeResult::class, $response->result);
 		self::assertEquals(
 			[
@@ -115,9 +116,9 @@ class InitializeMiddlewareTest extends AsyncTestCase
 			]);
 		$handler
 			->registerCapabiltiies(Argument::type(ServerCapabilities::class))
-			->will(function (array $args): void {
+			->will(static function (array $args): void {
 				$capabilities = $args[0];
-				assert($capabilities instanceof ServerCapabilities);
+				\assert($capabilities instanceof ServerCapabilities);
 				$capabilities->hoverProvider = true;
 			})
 			->shouldBeCalled();
@@ -134,7 +135,7 @@ class InitializeMiddlewareTest extends AsyncTestCase
 		);
 
 		self::assertInstanceOf(ResponseMessage::class, $response);
-		assert($response instanceof ResponseMessage);
+		\assert($response instanceof ResponseMessage);
 		self::assertInstanceOf(InitializeResult::class, $response->result);
 		self::assertTrue($response->result->capabilities->hoverProvider);
 	}

@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Service\Exception;
 
-use RuntimeException;
-
-class UnknownService extends RuntimeException {}
+class UnknownService extends \RuntimeException {}

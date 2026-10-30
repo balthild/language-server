@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Dispatcher\ArgumentResolver;
 
 use Phpactor\LanguageServer\Core\Dispatcher\ArgumentResolver;
@@ -20,7 +22,7 @@ final class ChainArgumentResolver implements ArgumentResolver
 
 	public function resolveArguments(object $object, string $method, Message $request): array
 	{
-		if (empty($this->resolvers)) {
+		if (!$this->resolvers) {
 			throw new CouldNotResolveArguments('No resolvers defined in chain resolver, chain resolver cannot resolve anything');
 		}
 

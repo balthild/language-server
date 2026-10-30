@@ -1,12 +1,12 @@
 <?php
 
-namespace Phpactor\LanguageServer\Core\Command;
+declare(strict_types=1);
 
-use Closure;
+namespace Phpactor\LanguageServer\Core\Command;
 
 class ClosureCommand implements Command
 {
-	public function __construct(private Closure $closure) {}
+	public function __construct(private \Closure $closure) {}
 
 	/**
 	 * @param mixed[] $args

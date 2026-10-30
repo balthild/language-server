@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Server;
 
 use Amp\PHPUnit\AsyncTestCase;
-use Closure;
-use Generator;
 use Phpactor\LanguageServer\Core\Server\ClientApi;
 use Phpactor\LanguageServer\Core\Server\RpcClient\TestRpcClient;
 use Phpactor\LanguageServer\WorkDoneProgress\WorkDoneToken;
@@ -16,9 +16,6 @@ use Phpactor\LanguageServerProtocol\MessageType;
 use Phpactor\LanguageServerProtocol\Registration;
 use Phpactor\LanguageServerProtocol\Unregistration;
 use Phpactor\LanguageServerProtocol\WorkspaceEdit;
-
-use function Amp\async;
-use function Amp\delay;
 
 class ClientApiTest extends AsyncTestCase
 {
@@ -32,7 +29,7 @@ class ClientApiTest extends AsyncTestCase
 	 * @dataProvider provideRegisterCapability
 	 * @dataProvider provideWorkDoneProgress
 	 */
-	public function testSend(Closure $executor, Closure $assertions): void
+	public function testSend(\Closure $executor, \Closure $assertions): void
 	{
 		$client = TestRpcClient::create();
 		$api = new ClientApi($client);
@@ -42,18 +39,18 @@ class ClientApiTest extends AsyncTestCase
 	}
 
 	/**
-	 * @return Generator<mixed>
+	 * @return \Generator<mixed>
 	 */
-	public function provideWindowShowMessage(): Generator
+	public function provideWindowShowMessage(): \Generator
 	{
 		yield [
-			function (ClientApi $api): void {
+			static function (ClientApi $api): void {
 				$api->window()->showMessage()->error('foobar');
 				$api->window()->showMessage()->log('foobar');
 				$api->window()->showMessage()->info('foobar');
 				$api->window()->showMessage()->warning('foobar');
 			},
-			function (TestRpcClient $client): void {
+			static function (TestRpcClient $client): void {
 				$message = $client->transmitter()->shiftNotification();
 				self::assertEquals('window/showMessage', $message->method);
 				self::assertEquals(MessageType::ERROR, $message->params['type']);
@@ -75,18 +72,18 @@ class ClientApiTest extends AsyncTestCase
 	}
 
 	/**
-	 * @return Generator<mixed>
+	 * @return \Generator<mixed>
 	 */
-	public function provideWindowLogMessage(): Generator
+	public function provideWindowLogMessage(): \Generator
 	{
 		yield [
-			function (ClientApi $api): void {
+			static function (ClientApi $api): void {
 				$api->window()->logMessage()->error('foobar');
 				$api->window()->logMessage()->log('foobar');
 				$api->window()->logMessage()->info('foobar');
 				$api->window()->logMessage()->warning('foobar');
 			},
-			function (TestRpcClient $client): void {
+			static function (TestRpcClient $client): void {
 				$message = $client->transmitter()->shiftNotification();
 				self::assertEquals('window/logMessage', $message->method);
 				self::assertEquals(MessageType::ERROR, $message->params['type']);
@@ -108,21 +105,21 @@ class ClientApiTest extends AsyncTestCase
 	}
 
 	/**
-	 * @return Generator<mixed>
+	 * @return \Generator<mixed>
 	 */
-	public function provideWindowShowMessageRequest(): Generator
+	public function provideWindowShowMessageRequest(): \Generator
 	{
 		yield [
-			function (ClientApi $api) {
-				$future = async(fn () => $api
+			static function (ClientApi $api) {
+				$future = \Amp\async(static fn () => $api
 					->window()
 					->showMessageRequest()
 					->info('foobar', new MessageActionItem('foobar')));
-				delay(0);
+				\Amp\delay(0);
 
 				return $future;
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$client->responseWatcher()->resolveLastResponse(['title' => 'foobar']);
 				$message = $client->transmitter()->shiftRequest();
 				self::assertEquals('window/showMessageRequest', $message->method);
@@ -137,18 +134,18 @@ class ClientApiTest extends AsyncTestCase
 	}
 
 	/**
-	 * @return Generator<mixed>
+	 * @return \Generator<mixed>
 	 */
-	public function provideWorkspaceEdit(): Generator
+	public function provideWorkspaceEdit(): \Generator
 	{
 		yield [
-			function (ClientApi $api) {
-				$future = async(fn () => $api->workspace()->applyEdit(new WorkspaceEdit([])));
-				delay(0);
+			static function (ClientApi $api) {
+				$future = \Amp\async(static fn () => $api->workspace()->applyEdit(new WorkspaceEdit([])));
+				\Amp\delay(0);
 
 				return $future;
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$client
 					->responseWatcher()
 					->resolveLastResponse([
@@ -167,18 +164,21 @@ class ClientApiTest extends AsyncTestCase
 	}
 
 	/**
-	 * @return Generator<mixed>
+	 * @return \Generator<mixed>
 	 */
-	public function provideWorkspaceExecuteCommand(): Generator
+	public function provideWorkspaceExecuteCommand(): \Generator
 	{
 		yield [
-			function (ClientApi $api) {
-				$future = async(fn () => $api->workspace()->executeCommand('one', ['one', 'two']));
-				delay(0);
+			static function (ClientApi $api) {
+				$future = \Amp\async(static fn () => $api->workspace()->executeCommand('one', [
+					'one',
+					'two',
+				]));
+				\Amp\delay(0);
 
 				return $future;
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$client->responseWatcher()->resolveLastResponse('result');
 				$message = $client->transmitter()->shiftRequest();
 				self::assertEquals('workspace/executeCommand', $message->method);
@@ -190,19 +190,19 @@ class ClientApiTest extends AsyncTestCase
 	}
 
 	/**
-	 * @return Generator<mixed>
+	 * @return \Generator<mixed>
 	 */
-	public function provideDiagnostics(): Generator
+	public function provideDiagnostics(): \Generator
 	{
 		yield [
-			function (ClientApi $api): void {
+			static function (ClientApi $api): void {
 				$api->diagnostics()->publishDiagnostics(
 					'file://file.php',
 					1,
 					[],
 				);
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$message = $client->transmitter()->shiftNotification();
 				self::assertEquals('textDocument/publishDiagnostics', $message->method);
 			},
@@ -210,13 +210,13 @@ class ClientApiTest extends AsyncTestCase
 	}
 
 	/**
-	 * @return Generator<mixed>
+	 * @return \Generator<mixed>
 	 */
-	public function provideRegisterCapability(): Generator
+	public function provideRegisterCapability(): \Generator
 	{
 		yield [
-			function (ClientApi $api): void {
-				async(fn () => $api->client()->registerCapability(
+			static function (ClientApi $api): void {
+				\Amp\async(static fn () => $api->client()->registerCapability(
 					new Registration(
 						'foobar',
 						'workspace/didChangeWatchedFiles',
@@ -225,22 +225,22 @@ class ClientApiTest extends AsyncTestCase
 						]),
 					),
 				));
-				delay(0);
+				\Amp\delay(0);
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$message = $client->transmitter()->shiftRequest();
 				self::assertEquals('client/registerCapability', $message->method);
 			},
 		];
 
 		yield [
-			function (ClientApi $api): void {
-				async(fn () => $api->client()->unregisterCapability(
+			static function (ClientApi $api): void {
+				\Amp\async(static fn () => $api->client()->unregisterCapability(
 					new Unregistration('10', 'foo'),
 				));
-				delay(0);
+				\Amp\delay(0);
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$message = $client->transmitter()->shiftRequest();
 				self::assertEquals('client/unregisterCapability', $message->method);
 			},
@@ -248,17 +248,17 @@ class ClientApiTest extends AsyncTestCase
 	}
 
 	/**
-	 * @return Generator<mixed>
+	 * @return \Generator<mixed>
 	 */
-	public function provideWorkDoneProgress(): Generator
+	public function provideWorkDoneProgress(): \Generator
 	{
 		yield 'Creating Work Done Progress' => [
-			function (ClientApi $api): void {
+			static function (ClientApi $api): void {
 				$token = new WorkDoneToken('4ef439b3-3c6a-4c98-ae0a-af2b4503cb15');
-				async(fn () => $api->workDoneProgress()->create($token));
-				delay(0);
+				\Amp\async(static fn () => $api->workDoneProgress()->create($token));
+				\Amp\delay(0);
 			},
-			function (TestRpcClient $client): void {
+			static function (TestRpcClient $client): void {
 				$message = $client->transmitter()->shiftRequest();
 				self::assertEquals('window/workDoneProgress/create', $message->method);
 				self::assertEquals('4ef439b3-3c6a-4c98-ae0a-af2b4503cb15', $message->params['token']);
@@ -266,11 +266,11 @@ class ClientApiTest extends AsyncTestCase
 		];
 
 		yield 'Work Done Progress Begin' => [
-			function (ClientApi $api): void {
+			static function (ClientApi $api): void {
 				$token = new WorkDoneToken('4ef439b3-3c6a-4c98-ae0a-af2b4503cb15');
 				$api->workDoneProgress()->begin($token, 'title', 'message');
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$message = $client->transmitter()->shiftNotification();
 				self::assertEquals('$/progress', $message->method);
 				self::assertEquals('4ef439b3-3c6a-4c98-ae0a-af2b4503cb15', $message->params['token']);
@@ -283,11 +283,11 @@ class ClientApiTest extends AsyncTestCase
 		];
 
 		yield 'Work Done Progress Report' => [
-			function (ClientApi $api): void {
+			static function (ClientApi $api): void {
 				$token = new WorkDoneToken('4ef439b3-3c6a-4c98-ae0a-af2b4503cb15');
 				$api->workDoneProgress()->report($token, 'message', 20);
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$message = $client->transmitter()->shiftNotification();
 				self::assertEquals('$/progress', $message->method);
 				self::assertEquals('4ef439b3-3c6a-4c98-ae0a-af2b4503cb15', $message->params['token']);
@@ -299,11 +299,11 @@ class ClientApiTest extends AsyncTestCase
 		];
 
 		yield 'Work Done Progress End' => [
-			function (ClientApi $api): void {
+			static function (ClientApi $api): void {
 				$token = new WorkDoneToken('4ef439b3-3c6a-4c98-ae0a-af2b4503cb15');
 				$api->workDoneProgress()->end($token, 'message');
 			},
-			function (TestRpcClient $client, $result): void {
+			static function (TestRpcClient $client, $result): void {
 				$message = $client->transmitter()->shiftNotification();
 				self::assertEquals('$/progress', $message->method);
 				self::assertEquals('4ef439b3-3c6a-4c98-ae0a-af2b4503cb15', $message->params['token']);

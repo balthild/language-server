@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\WorkDoneProgress;
 
 use Amp\PHPUnit\AsyncTestCase;
@@ -10,9 +12,6 @@ use Phpactor\LanguageServer\WorkDoneProgress\ClientCapabilityDependentProgressNo
 use Phpactor\LanguageServer\WorkDoneProgress\WorkDoneToken;
 use Phpactor\LanguageServerProtocol\ClientCapabilities;
 use Phpactor\LanguageServerProtocol\MessageType;
-
-use function Amp\async;
-use function Amp\delay;
 
 final class ClientCapabilityDependentProgressNotifierTest extends AsyncTestCase
 {
@@ -35,8 +34,8 @@ final class ClientCapabilityDependentProgressNotifierTest extends AsyncTestCase
 
 		// create() waits for the client to acknowledge, so it has to run in a
 		// fiber: the request is transmitted before it suspends.
-		async(fn () => $notifier->create($token));
-		delay(0);
+		\Amp\async(static fn () => $notifier->create($token));
+		\Amp\delay(0);
 		$message = $this->transmitter->shiftRequest();
 		self::assertEquals('window/workDoneProgress/create', $message->method);
 		self::assertEquals((string) $token, $message->params['token']);

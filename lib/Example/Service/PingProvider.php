@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Example\Service;
 
 use Amp\Cancellation;
 use Amp\CancelledException;
 use Phpactor\LanguageServer\Core\Server\ClientApi;
 use Phpactor\LanguageServer\Core\Service\ServiceProvider;
-
-use function Amp\delay;
 
 /**
  * Example service which shows a "ping" message every second.
@@ -34,7 +34,7 @@ class PingProvider implements ServiceProvider
 			} catch (CancelledException $cancelled) {
 				break;
 			}
-			delay(1);
+			\Amp\delay(1);
 			$this->client->window()->showMessage()->info('ping');
 		}
 	}

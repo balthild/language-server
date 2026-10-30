@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Handler\System;
 
 use Phpactor\LanguageServer\Core\Handler\Handler;
@@ -25,12 +27,12 @@ class StatsHandler implements Handler
 			->window()
 			->showMessage()
 			->info(
-				implode(', ', [
-					'pid: ' . getmypid(),
+				\implode(', ', [
+					'pid: ' . \getmypid(),
 					'up: ' . $this->statProvider->uptime()->format('%ad %hh %im %ss'),
 					'connections: ' . $this->statProvider->connectionCount(),
 					'requests: ' . $this->statProvider->requestCount(),
-					'mem: ' . number_format(memory_get_peak_usage()) . 'b',
+					'mem: ' . \number_format(\memory_get_peak_usage()) . 'b',
 				]),
 			);
 	}

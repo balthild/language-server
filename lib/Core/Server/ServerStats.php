@@ -1,9 +1,8 @@
 <?php
 
-namespace Phpactor\LanguageServer\Core\Server;
+declare(strict_types=1);
 
-use DateInterval;
-use DateTimeImmutable;
+namespace Phpactor\LanguageServer\Core\Server;
 
 /**
  * Class which can be passed _to_ the server in order to collect statistics.
@@ -11,7 +10,7 @@ use DateTimeImmutable;
 final class ServerStats implements ServerStatsReader
 {
 	public function __construct(
-		private DateTimeImmutable $created = new DateTimeImmutable(),
+		private \DateTimeImmutable $created = new \DateTimeImmutable(),
 		private int $connectionCount = 0,
 		private int $requestCount = 0,
 	) {}
@@ -31,9 +30,9 @@ final class ServerStats implements ServerStatsReader
 		$this->requestCount++;
 	}
 
-	public function uptime(): DateInterval
+	public function uptime(): \DateInterval
 	{
-		return $this->created->diff(new DateTimeImmutable());
+		return $this->created->diff(new \DateTimeImmutable());
 	}
 
 	public function connectionCount(): int

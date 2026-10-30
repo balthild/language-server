@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Server\RpcClient;
 
 use Amp\PHPUnit\AsyncTestCase;
 use Phpactor\LanguageServer\Core\Server\ResponseWatcher\TestResponseWatcher;
 use Phpactor\LanguageServer\Core\Server\RpcClient\JsonRpcClient;
 use Phpactor\LanguageServer\Core\Server\Transmitter\TestMessageTransmitter;
-
-use function Amp\async;
-use function Amp\delay;
 
 class JsonRpcClientTest extends AsyncTestCase
 {
@@ -20,13 +19,13 @@ class JsonRpcClientTest extends AsyncTestCase
 
 		// request() waits for the response, so it has to run in a fiber: the
 		// request is transmitted before it suspends.
-		async(fn () => $client->request('foobar', []));
-		delay(0);
+		\Amp\async(static fn () => $client->request('foobar', []));
+		\Amp\delay(0);
 
 		// request is serializable
 		$request = $transmitter->shiftRequest();
 
-		$encoded = json_encode($request);
+		$encoded = \json_encode($request);
 		self::assertIsString($encoded);
 	}
 }

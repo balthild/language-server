@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Middleware;
 
 use Amp\CancelledException;
@@ -13,7 +15,6 @@ use Phpactor\LanguageServer\Core\Rpc\ResponseError;
 use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
 use Phpactor\LanguageServer\Core\Server\Exception\ServerControl;
 use Psr\Log\LoggerInterface;
-use Throwable;
 
 class ErrorHandlingMiddleware implements Middleware
 {
@@ -34,16 +35,16 @@ class ErrorHandlingMiddleware implements Middleware
 				$request->id,
 				null,
 				new ResponseError(
-					ErrorCodes::RequestCancelled,
-					sprintf('Request %d (%s) cancelled', $request->id, $request->method),
+					ErrorCodes::REQUEST_CANCELLED,
+					\sprintf('Request %d (%s) cancelled', $request->id, $request->method),
 				),
 			);
-		} catch (Throwable $error) {
-			$message = sprintf('Exception [%s] %s', $error::class, $error->getMessage());
-			$this->logger->error(sprintf(
+		} catch (\Throwable $error) {
+			$message = \sprintf('Exception [%s] %s', $error::class, $error->getMessage());
+			$this->logger->error(\sprintf(
 				'Error when handling "%s" (%s): %s',
 				$request::class,
-				json_encode($request),
+				\json_encode($request),
 				$message,
 			));
 
@@ -56,19 +57,19 @@ class ErrorHandlingMiddleware implements Middleware
 				null,
 				new ResponseError(
 					$this->resolveErrorCode($error),
-					sprintf('%s at %s#%s', $message, $error->getFile(), $error->getLine()),
+					\sprintf('%s at %s#%s', $message, $error->getFile(), $error->getLine()),
 					$error->getTraceAsString(),
 				),
 			);
 		}
 	}
 
-	private function resolveErrorCode(Throwable $error): int
+	private function resolveErrorCode(\Throwable $error): int
 	{
 		if ($error instanceof HandlerNotFound) {
-			return ErrorCodes::MethodNotFound;
+			return ErrorCodes::METHOD_NOT_FOUND;
 		}
 
-		return ErrorCodes::InternalError;
+		return ErrorCodes::INTERNAL_ERROR;
 	}
 }

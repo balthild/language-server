@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Server\Parser;
 
 use Amp\ByteStream\ReadableBuffer;

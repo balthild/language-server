@@ -1,19 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Diagnostics;
 
 use Amp\Cancellation;
 use Amp\CancelledException;
 use Amp\DeferredFuture;
-use Exception;
 use Phpactor\LanguageServer\Core\Server\ClientApi;
 use Phpactor\LanguageServerProtocol\Diagnostic;
 use Phpactor\LanguageServerProtocol\TextDocumentItem;
 use Psr\Log\LoggerInterface;
-use Throwable;
-
-use function Amp\async;
-use function Amp\delay;
 
 class DiagnosticsEngine
 {
@@ -73,8 +70,8 @@ class DiagnosticsEngine
 			$this->awaitNextDocument();
 
 			$beforeDocument = $this->waiting;
-			$gracePeriod = abs($this->sleepTime - ((microtime(true) - $this->lastUpdatedAt) * 1000));
-			delay(intval($gracePeriod) / 1000);
+			$gracePeriod = \abs($this->sleepTime - ((\microtime(true) - $this->lastUpdatedAt) * 1000));
+			\Amp\delay(\intval($gracePeriod) / 1000);
 
 			if ($beforeDocument !== $this->waiting) {
 				continue;
@@ -101,18 +98,18 @@ class DiagnosticsEngine
 			$crashedProviders = [];
 
 			foreach ($this->providers as $providerId => $provider) {
-				if (in_array($providerId, $crashedProviders)) {
+				if (\array_key_exists($providerId, $crashedProviders)) {
 					continue;
 				}
 
-				async(function () use (
+				\Amp\async(function () use (
 					$providerId,
 					$provider,
 					$token,
 					$textDocument,
 					&$crashedProviders,
 				): void {
-					$start = microtime(true);
+					$start = \microtime(true);
 
 					$this->awaitProviderLock($providerId);
 
@@ -125,15 +122,15 @@ class DiagnosticsEngine
 					try {
 						/** @var Diagnostic[] $diagnostics */
 						$diagnostics = $provider->provideDiagnostics($textDocument, $token);
-					} catch (Throwable $e) {
-						$message = sprintf(
+					} catch (\Throwable $e) {
+						$message = \sprintf(
 							'Diagnostic provider "%s" errored with "%s", removing from pool',
 							$providerId,
 							$e->getMessage(),
 						);
 						$this->clientApi->window()->showMessage()->warning($message);
 						$this->logger->error($message, [
-							'stack' => (new Exception())->getTraceAsString(),
+							'stack' => (new \Exception())->getTraceAsString(),
 						]);
 						$crashedProviders[$providerId] = true;
 						return;
@@ -149,13 +146,13 @@ class DiagnosticsEngine
 						return;
 					}
 
-					$elapsed = (int) round((microtime(true) - $start) / 1000);
+					$elapsed = (int) \round((\microtime(true) - $start) / 1000);
 
 					if (!$this->isDocumentCurrent($textDocument)) {
 						return;
 					}
 
-					$this->diagnostics[$textDocument->uri] = array_merge(
+					$this->diagnostics[$textDocument->uri] = \array_merge(
 						$this->diagnostics[$textDocument->uri] ?? [],
 						$diagnostics,
 					);
@@ -174,7 +171,7 @@ class DiagnosticsEngine
 	{
 		// set the last updated at timestamp - this will be used as the basis of
 		// the grace period before linting
-		$this->lastUpdatedAt = microtime(true);
+		$this->lastUpdatedAt = \microtime(true);
 
 		$waiting = $this->waiting;
 
@@ -198,7 +195,7 @@ class DiagnosticsEngine
 
 	private function awaitProviderLock(int|string $providerId): void
 	{
-		if (!array_key_exists($providerId, $this->locks)) {
+		if (!\array_key_exists($providerId, $this->locks)) {
 			return;
 		}
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Server\StreamProvider;
 
 use Phpactor\LanguageServer\Core\Server\Stream\DuplexStream;

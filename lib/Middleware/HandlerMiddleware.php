@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Middleware;
 
 use Phpactor\LanguageServer\Core\Handler\MethodRunner;

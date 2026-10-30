@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Diagnostics;
 
 use Amp\Cancellation;
 use Phpactor\LanguageServerProtocol\TextDocumentItem;
 use Psr\Log\LoggerInterface;
-use Throwable;
 
 class AggregateDiagnosticsProvider implements DiagnosticsProvider
 {
@@ -29,8 +30,8 @@ class AggregateDiagnosticsProvider implements DiagnosticsProvider
 		$diagnostics = [];
 		foreach ($this->providers as $provider) {
 			try {
-				$start = microtime(true);
-				$diagnostics = array_merge(
+				$start = \microtime(true);
+				$diagnostics = \array_merge(
 					$diagnostics,
 					$provider->provideDiagnostics($textDocument, $cancel),
 				);
@@ -38,13 +39,13 @@ class AggregateDiagnosticsProvider implements DiagnosticsProvider
 					$this->logger->info('Diagnostics cancelled');
 					return $diagnostics;
 				}
-				$this->logger->debug(sprintf(
-					'Diagnostic finsihed in "%s" (%s)',
-					number_format(microtime(true) - $start, 2),
+				$this->logger->debug(\sprintf(
+					'Diagnostic finished in "%s" (%s)',
+					\number_format(\microtime(true) - $start, 2),
 					$provider::class,
 				));
-			} catch (Throwable $throwable) {
-				$this->logger->error(sprintf(
+			} catch (\Throwable $throwable) {
+				$this->logger->error(\sprintf(
 					'Diagnostic error from provider "%s": %s',
 					$provider::class,
 					$throwable->getMessage(),
@@ -62,14 +63,14 @@ class AggregateDiagnosticsProvider implements DiagnosticsProvider
 	 */
 	public function names(): array
 	{
-		return array_map(
-			fn (DiagnosticsProvider $provider): string => $provider->name(),
+		return \array_map(
+			static fn (DiagnosticsProvider $provider): string => $provider->name(),
 			$this->providers,
 		);
 	}
 
 	public function name(): string
 	{
-		return implode(', ', $this->names());
+		return \implode(', ', $this->names());
 	}
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Tests\Unit\Core\Server\Transmitter;
 
 use Phpactor\LanguageServer\Core\Rpc\Message;
@@ -8,13 +10,12 @@ use Phpactor\LanguageServer\Core\Rpc\ResponseError;
 use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
 use Phpactor\LanguageServer\Core\Server\Transmitter\LspMessageSerializer;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class LspMessageSerializerTest extends TestCase
 {
 	public function testExceptionCouldNotEncodeJson(): void
 	{
-		$this->expectException(RuntimeException::class);
+		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('Could not encode JSON');
 
 		$message = new ResponseMessage(1, [

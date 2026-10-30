@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Handler\System;
 
 use Phpactor\LanguageServer\Core\Handler\Handler;
@@ -40,9 +42,9 @@ class ServiceHandler implements Handler
 		$this->client
 			->window()
 			->showMessage()
-			->info(sprintf(
+			->info(\sprintf(
 				'Running services: "%s"',
-				implode('", "', $this->manager->runningServices()),
+				\implode('", "', $this->manager->runningServices()),
 			));
 
 		return $this->manager->runningServices();

@@ -2,7 +2,7 @@
 php-version = "8.2"
 
 [source]
-paths = ["lib/", "tests/", "bin/", "example/"]
+paths = ["lib/", "tests/", "internal/", "example/"]
 includes = ["vendor"]
 
 [linter.rules]
@@ -10,9 +10,18 @@ valid-docblock.enabled = true
 ambiguous-constant-access.enabled = true
 ambiguous-function-call.enabled = true
 literal-named-argument.enabled = false
-prefer-arrow-function.enabled = false
 prefer-early-continue.enabled = false
 no-else-clause.enabled = false
 no-duplicate-match-arm.enabled = false
+no-shorthand-ternary.enabled = false
+no-isset.enabled = false
+assert-description.enabled = false
 
 readable-literal.min-digits = 6
+function-name.camel = true
+
+# https://github.com/carthage-software/mago/issues/2647
+sensitive-parameter.enabled = false
+
+[extension-hosts]
+project.command = ["php", "internal/bin/mago-worker.php"]

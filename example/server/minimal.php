@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 use Phpactor\LanguageServer\Core\Dispatcher\Dispatcher\MiddlewareDispatcher;
 use Phpactor\LanguageServer\Core\Dispatcher\Factory\ClosureDispatcherFactory;
 use Phpactor\LanguageServer\Core\Middleware\RequestHandler;
@@ -14,6 +16,7 @@ use Phpactor\LanguageServerProtocol\InitializeParams;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
+// @mago-expect lint:prefer-arrow-function
 $builder = LanguageServerBuilder::create(new ClosureDispatcherFactory(
 	function (MessageTransmitter $transmitter, InitializeParams $params) {
 		return new MiddlewareDispatcher(

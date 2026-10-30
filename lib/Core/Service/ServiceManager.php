@@ -1,13 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phpactor\LanguageServer\Core\Service;
 
 use Amp\DeferredCancellation;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
-use Throwable;
-
-use function Amp\async;
 
 class ServiceManager
 {
@@ -26,7 +24,7 @@ class ServiceManager
 	 */
 	public function runningServices(): array
 	{
-		return array_keys($this->cancellations);
+		return \array_keys($this->cancellations);
 	}
 
 	public function startAll(): void
@@ -41,16 +39,16 @@ class ServiceManager
 		$provider = $this->serviceProviders->get($serviceName);
 
 		if (isset($this->cancellations[$serviceName])) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Service "%s" is already running',
 				$serviceName,
 			));
 		}
 
-		$this->logger->info(sprintf('Starting service: %s (%s)', $serviceName, $provider::class));
+		$this->logger->info(\sprintf('Starting service: %s (%s)', $serviceName, $provider::class));
 
-		if (!method_exists($provider, $serviceName)) {
-			throw new RuntimeException(sprintf(
+		if (!\method_exists($provider, $serviceName)) {
+			throw new \RuntimeException(\sprintf(
 				'Service provider "%s" has no service method "%s"',
 				$provider::class,
 				$serviceName,
@@ -61,11 +59,11 @@ class ServiceManager
 		$this->cancellations[$serviceName] = $cancel;
 		$token = $cancel->getCancellation();
 
-		async(function () use ($provider, $serviceName, $token): void {
+		\Amp\async(function () use ($provider, $serviceName, $token): void {
 			try {
 				$provider->$serviceName($token);
-			} catch (Throwable $error) {
-				$this->logger->error(sprintf(
+			} catch (\Throwable $error) {
+				$this->logger->error(\sprintf(
 					'Error in service "%s" "%s:%s": %s',
 					$serviceName,
 					$provider::class,
@@ -81,15 +79,15 @@ class ServiceManager
 		$this->serviceProviders->assertExists($serviceName);
 
 		if (!isset($this->cancellations[$serviceName])) {
-			throw new RuntimeException(sprintf(
+			throw new \RuntimeException(\sprintf(
 				'Cannot stop service "%s" it has not been started, running services: "%s"',
 				$serviceName,
-				implode('", "', array_keys($this->cancellations)),
+				\implode('", "', \array_keys($this->cancellations)),
 			));
 		}
 
 		$tokenSource = $this->cancellations[$serviceName];
-		assert($tokenSource instanceof DeferredCancellation);
+		\assert($tokenSource instanceof DeferredCancellation);
 		$tokenSource->cancel();
 		unset($this->cancellations[$serviceName]);
 	}
