@@ -68,7 +68,7 @@ class LanguageServerTest extends AsyncTestCase
 	}
 
 	/**
-	 * @param Closure(Message): ResponseMessage|null $handler
+	 * @param \Closure(Message): ?ResponseMessage $handler
 	 */
 	private function dispatchRequest(
 		RequestMessage $request,

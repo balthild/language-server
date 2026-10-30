@@ -11,7 +11,7 @@ use Phpactor\LanguageServer\Core\Server\ResponseWatcher;
 final class TestResponseWatcher implements ResponseWatcher
 {
 	/**
-	 * @var array
+	 * @var list<int|string>
 	 */
 	private array $requestIds = [];
 

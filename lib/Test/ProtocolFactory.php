@@ -46,11 +46,17 @@ final class ProtocolFactory
 		return $params;
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 */
 	public static function requestMessage(string $method, array $params): RequestMessage
 	{
 		return new RequestMessage(\uniqid(), $method, $params);
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 */
 	public static function notificationMessage(string $method, array $params): NotificationMessage
 	{
 		return new NotificationMessage($method, $params);

@@ -17,7 +17,7 @@ use Phpactor\LanguageServerProtocol\TextDocumentContentChangeFullEvent;
 class TextDocumentTester
 {
 	/**
-	 * @var array<string,int>
+	 * @var array<string, int>
 	 */
 	private static array $versions = [];
 

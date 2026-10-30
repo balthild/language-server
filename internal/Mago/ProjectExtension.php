@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Phpactor\LanguageServer\Internal\Mago;
 
 use Mago\Sdk\Extension;
+use Phpactor\LanguageServer\Internal\Mago\Analyzer\StubPlugin;
 use Phpactor\LanguageServer\Internal\Mago\Linter\NoImportConstantRule;
 use Phpactor\LanguageServer\Internal\Mago\Linter\NoImportFunctionRule;
 use Phpactor\LanguageServer\Internal\Mago\Linter\NoImportGlobalClassRule;
@@ -23,6 +24,9 @@ final class ProjectExtension
 				new NoImportConstantRule(),
 				new NoImportFunctionRule(),
 				new NoImportGlobalClassRule(),
+			],
+			analyzerPlugins: [
+				new StubPlugin(),
 			],
 		);
 	}

@@ -10,7 +10,7 @@ use Phpactor\LanguageServerProtocol\TextEdit;
 interface Formatter
 {
 	/**
-	 * @return list<TextEdit>|null
+	 * @return ?list<TextEdit>
 	 */
 	public function format(TextDocumentItem $textDocument): ?array;
 }

@@ -10,7 +10,7 @@ namespace Phpactor\LanguageServer\Core\Command;
 class CommandDispatcher
 {
 	/**
-	 * @param array<string,Command> $commandMap Map of command names to invokable objects
+	 * @param array<string, Command> $commandMap Map of command names to invokable objects
 	 */
 	public function __construct(private array $commandMap = [])
 	{
@@ -28,7 +28,7 @@ class CommandDispatcher
 	}
 
 	/**
-	 * @param array<int,mixed> $args
+	 * @param array<int, mixed> $args
 	 */
 	public function dispatch(string $command, array $args = []): mixed
 	{

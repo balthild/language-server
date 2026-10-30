@@ -23,5 +23,10 @@ function-name.camel = true
 # https://github.com/carthage-software/mago/issues/2647
 sensitive-parameter.enabled = false
 
+[analyzer]
+plugins = ["project/event-dispatcher"]
+excludes = ["tests", "internal/stub"]
+ignore = ["mixed-assignment", "string-member-selector"]
+
 [extension-hosts]
 project.command = ["php", "internal/bin/mago-worker.php"]

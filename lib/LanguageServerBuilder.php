@@ -22,7 +22,7 @@ use Psr\Log\NullLogger;
 final class LanguageServerBuilder
 {
 	/**
-	 * @var string|null
+	 * @var ?string
 	 */
 	private ?string $tcpAddress = null;
 

@@ -12,7 +12,7 @@ use Phpactor\LanguageServer\Core\Service\Exception\UnknownService;
 final class ServiceProviders implements \Countable, \IteratorAggregate
 {
 	/**
-	 * @var array<string,ServiceProvider>
+	 * @var array<string, ServiceProvider>
 	 */
 	private array $services = [];
 

@@ -9,7 +9,7 @@ interface ProgressNotifier
 	public function create(WorkDoneToken $token): void;
 
 	/**
-	 * @param int|null $percentage Percentage comprised between 0 and 100
+	 * @param ?int $percentage Percentage comprised between 0 and 100
 	 */
 	public function begin(
 		WorkDoneToken $token,
@@ -20,7 +20,7 @@ interface ProgressNotifier
 	): void;
 
 	/**
-	 * @param int|null $percentage Percentage comprised between 0 and 100
+	 * @param ?int $percentage Percentage comprised between 0 and 100
 	 */
 	public function report(
 		WorkDoneToken $token,

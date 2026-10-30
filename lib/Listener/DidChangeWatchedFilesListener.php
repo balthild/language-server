@@ -15,6 +15,9 @@ use Ramsey\Uuid\Uuid;
 
 class DidChangeWatchedFilesListener implements ListenerProviderInterface
 {
+	/**
+	 * @param list<string> $globPatterns
+	 */
 	public function __construct(
 		private ClientApi $client,
 		private array $globPatterns,

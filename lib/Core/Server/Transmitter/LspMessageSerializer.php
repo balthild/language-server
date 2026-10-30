@@ -52,6 +52,10 @@ final class LspMessageSerializer implements MessageSerializer
 		);
 	}
 
+	/**
+	 * @param array<string, mixed> $data
+	 * @return array<string, mixed>
+	 */
 	private function ensureOnlyResultOrErrorSet(array $data): array
 	{
 		if (\array_key_exists('error', $data) && \array_key_exists('result', $data)) {

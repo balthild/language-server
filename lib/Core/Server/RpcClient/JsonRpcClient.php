@@ -19,11 +19,17 @@ final class JsonRpcClient implements RpcClient
 		private ResponseWatcher $responseWatcher,
 	) {}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function notification(string $method, array $params): void
 	{
 		$this->transmitter->transmit(new NotificationMessage($method, $params));
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function request(string $method, array $params): ResponseMessage
 	{
 		$requestId = Uuid::uuid4()->__toString();

@@ -34,15 +34,11 @@ final class LanguageServerTester
 	}
 
 	/**
-	 * @return Future<ResponseMessage|null>
+	 * @return Future<?ResponseMessage>
 	 */
 	public function dispatch(Message $message): Future
 	{
-		/** @var Future<ResponseMessage|null> $future */
-		// @mago-expect lint:inline-variable-return
-		$future = \Amp\async(fn (): ?ResponseMessage => $this->dispatcher->dispatch($message));
-
-		return $future;
+		return \Amp\async(fn () => $this->dispatcher->dispatch($message));
 	}
 
 	public function dispatchAndWait(Message $message): ?ResponseMessage
@@ -51,9 +47,9 @@ final class LanguageServerTester
 	}
 
 	/**
-	 * @param array|object $params
-	 * @param int|string $id
-	 * @return Future<ResponseMessage|null>
+	 * @param array<string, mixed>|object $params
+	 * @param int|string|null $id
+	 * @return Future<?ResponseMessage>
 	 */
 	public function request(string $method, $params, $id = null): Future
 	{
@@ -67,20 +63,23 @@ final class LanguageServerTester
 	}
 
 	/**
-	 * @param array|object $params
-	 * @param int|string $id
+	 * @param array<string, mixed>|object $params
+	 * @param int|string|null $id
 	 */
-	public function requestAndWait(string $method, $params, $id = null): ?ResponseMessage
-	{
+	public function requestAndWait(
+		string $method,
+		array|object $params,
+		int|string|null $id = null,
+	): ?ResponseMessage {
 		return $this->request($method, $this->normalizeParams($params), $id)->await();
 	}
 
 	/**
-	 * @param array|object $params
+	 * @param array<string, mixed>|object $params
 	 */
 	public function mustRequestAndWait(
 		string $method,
-		mixed $params,
+		array|object $params,
 		int|string|null $id = null,
 	): ResponseMessage {
 		$response = $this->requestAndWait($method, $params);
@@ -96,11 +95,11 @@ final class LanguageServerTester
 	}
 
 	/**
-	 * @param mixed $value
 	 * @param string|int $id
+	 * @param mixed $value
 	 * @return Future<mixed>
 	 */
-	public function respond($id, $value): Future
+	public function respond(string|int $id, $value): Future
 	{
 		$requestMessage = new ResponseMessage($id, $value);
 
@@ -108,20 +107,20 @@ final class LanguageServerTester
 	}
 
 	/**
-	 * @param mixed $value
 	 * @param string|int $id
+	 * @param mixed $value
 	 * @return mixed
 	 */
-	public function respondAndWait($id, $value)
+	public function respondAndWait(string|int $id, $value)
 	{
 		return $this->respond($id, $value)->await();
 	}
 
 	/**
-	 * @param array|object $params
-	 * @return Future<ResponseMessage|null>
+	 * @param array<string, mixed>|object $params
+	 * @return Future<?ResponseMessage>
 	 */
-	public function notify(string $method, $params): Future
+	public function notify(string $method, array|object $params): Future
 	{
 		$notifyMessage = new NotificationMessage($method, $this->normalizeParams($params));
 
@@ -129,9 +128,9 @@ final class LanguageServerTester
 	}
 
 	/**
-	 * @param array|object $params
+	 * @param array<string, mixed>|object $params
 	 */
-	public function notifyAndWait(string $method, $params): void
+	public function notifyAndWait(string $method, array|object $params): void
 	{
 		$this->notify($method, $this->normalizeParams($params))->await();
 	}
@@ -201,10 +200,10 @@ final class LanguageServerTester
 	}
 
 	/**
-	 * @param array|object $params
-	 * @return array<string,mixed>
+	 * @param array<string, mixed>|object $params
+	 * @return array<string, mixed>
 	 */
-	private function normalizeParams($params): array
+	private function normalizeParams(array|object $params): array
 	{
 		if (\is_array($params)) {
 			return $params;

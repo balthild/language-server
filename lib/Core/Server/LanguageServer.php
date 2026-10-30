@@ -125,8 +125,7 @@ final class LanguageServer
 		// accept incoming connections (in the case of a TCP server this is
 		// a connection, with a STDIO stream this just returns the stream
 		// immediately)
-		// @mago-expect lint:no-assign-in-condition
-		while ($connection = $this->streamProvider->accept()) {
+		while (($connection = $this->streamProvider->accept()) !== null) {
 			$this->stats->incConnectionCount();
 
 			// create a reference to the connection so that we can later

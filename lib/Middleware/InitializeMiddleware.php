@@ -25,7 +25,7 @@ class InitializeMiddleware implements Middleware
 	private bool $initialized = false;
 
 	/**
-	 * @param array{name?:string,version?:string} $serverInfo
+	 * @param array{name?: string, version?: string} $serverInfo
 	 */
 	public function __construct(
 		private Handlers $handlers,

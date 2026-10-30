@@ -10,7 +10,7 @@ use Psr\Log\LoggerInterface;
 class ServiceManager
 {
 	/**
-	 * @var DeferredCancellation[]
+	 * @var array<string, DeferredCancellation>
 	 */
 	private array $cancellations = [];
 

@@ -13,6 +13,9 @@ use Phpactor\LanguageServer\Core\Rpc\ResponseMessage;
 
 class MethodAliasMiddleware implements Middleware
 {
+	/**
+	 * @param array<string, string> $aliasMap
+	 */
 	public function __construct(private array $aliasMap) {}
 
 	/**

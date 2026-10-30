@@ -165,7 +165,7 @@ function scanSource(string $source, int $printWidth, int $tabWidth): array
 /**
  * @param list<array{id: ?int, text: string, start: int, end: int, line: int}> $entries
  *
- * @return null|array{line: int, name: string, kind: string, paramCount: int, width: int, reason: ?string, detail: string}
+ * @return ?array{line: int, name: string, kind: string, paramCount: int, width: int, reason: ?string, detail: string}
  */
 function scanFunctionLike(
 	string $source,

@@ -6,12 +6,15 @@ namespace Phpactor\LanguageServer\Core\Rpc;
 
 final class ResponseMessage extends Message implements \JsonSerializable
 {
-	/**
-	 * @param mixed $result
-	 * @param string|int $id
-	 */
-	public function __construct(public $id, public $result, public ?ResponseError $error = null) {}
+	public function __construct(
+		public string|int $id,
+		public mixed $result,
+		public ?ResponseError $error = null,
+	) {}
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	public function jsonSerialize(): array
 	{
 		$response = [

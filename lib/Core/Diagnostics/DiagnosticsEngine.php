@@ -22,12 +22,12 @@ class DiagnosticsEngine
 	private ?TextDocumentItem $waiting = null;
 
 	/**
-	 * @var array<int|string,list<Diagnostic>>
+	 * @var array<int|string, list<Diagnostic>>
 	 */
 	private array $diagnostics = [];
 
 	/**
-	 * @var array<string,DeferredFuture<bool>>
+	 * @var array<string, DeferredFuture<bool>>
 	 */
 	private array $locks = [];
 

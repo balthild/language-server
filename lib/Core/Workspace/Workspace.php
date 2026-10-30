@@ -12,17 +12,17 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * @implements \IteratorAggregate<string,TextDocumentItem>
+ * @implements \IteratorAggregate<string, TextDocumentItem>
  */
 class Workspace implements \Countable, \IteratorAggregate
 {
 	/**
-	 * @var TextDocumentItem[]
+	 * @var array<string, TextDocumentItem>
 	 */
 	private array $documents = [];
 
 	/**
-	 * @var array<string,int>
+	 * @var array<string, int>
 	 */
 	private array $documentVersions = [];
 
@@ -101,7 +101,7 @@ class Workspace implements \Countable, \IteratorAggregate
 	}
 
 	/**
-	 * @return \ArrayIterator<string,TextDocumentItem>
+	 * @return \ArrayIterator<string, TextDocumentItem>
 	 */
 	public function getIterator(): \ArrayIterator
 	{

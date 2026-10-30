@@ -8,16 +8,16 @@ final class RequestMessage extends Message
 {
 	/**
 	 * @param string|int $id
+	 * @param ?array<string, mixed> $params
 	 */
 	public function __construct(
-		public $id,
+		public string|int $id,
 		public string $method,
-		/** @var array<string,mixed>|null */
 		public ?array $params,
 	) {}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array<string, mixed>
 	 */
 	public function toArray(): array
 	{

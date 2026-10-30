@@ -25,6 +25,9 @@ final class TestRpcClient implements RpcClient
 		return new self(new TestMessageTransmitter(), new TestResponseWatcher());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function notification(string $method, array $params): void
 	{
 		$this->client->notification($method, $params);

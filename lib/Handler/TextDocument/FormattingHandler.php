@@ -30,7 +30,7 @@ class FormattingHandler implements Handler, CanRegisterCapabilities
 	}
 
 	/**
-	 * @return list<TextEdit>|null
+	 * @return ?list<TextEdit>
 	 */
 	public function formatting(
 		TextDocumentIdentifier $textDocument,

@@ -13,6 +13,7 @@ class WorkspaceTester
 	public function __construct(private LanguageServerTester $tester) {}
 
 	/**
+	 * @param ?array $args
 	 * @return Future<mixed>
 	 */
 	public function executeCommand(string $command, ?array $args = []): Future

@@ -21,7 +21,7 @@ final class LspMessageReader implements RequestReader
 	private string $overflow = '';
 
 	/**
-	 * @var null|array<string>
+	 * @var ?array<string, string>
 	 */
 	private ?array $headers = null;
 
@@ -63,9 +63,7 @@ final class LspMessageReader implements RequestReader
 	{
 		// start by parsing the headers:
 		if ($this->headers === null && \substr($this->buffer, -4, 4) === "\r\n\r\n") {
-			$this->headers = $this->parseHeaders(
-				\substr($this->buffer, 0, -4),
-			);
+			$this->headers = $this->parseHeaders(\substr($this->buffer, 0, -4));
 			$this->buffer = '';
 			return null;
 		}
@@ -95,6 +93,9 @@ final class LspMessageReader implements RequestReader
 		return $request;
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	private function parseHeaders(string $rawHeaders): array
 	{
 		$lines = \explode("\r\n", $rawHeaders);
