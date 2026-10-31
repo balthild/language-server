@@ -26,6 +26,22 @@ This is similar to :doc:`method handlers <handlers>` with the exception that:
   its own fiber and should block for as long as the service is meant to run;
   the server stops it by cancelling the token.
 
+Cancellation source lifetime
+----------------------------
+
+If you create a token with ``Amp\DeferredCancellation``, keep the source object
+alive while the token is in use. Destroying the source requests cancellation, so
+a token retrieved from a temporary source is already cancelled:
+
+.. code-block:: php
+
+    <?php
+
+    use Amp\DeferredCancellation;
+
+    $cancellation = (new DeferredCancellation())->getCancellation();
+    $cancellation->isRequested(); // true
+
 Usage
 -----
 

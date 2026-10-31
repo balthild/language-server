@@ -180,3 +180,19 @@ if the request is cancelled as follows:
 
 In the above example, when the server cancels this request, the exception will
 be thrown and we will return early.
+
+Cancellation source lifetime
+----------------------------
+
+If you create a token with ``Amp\DeferredCancellation``, keep the source object
+alive while the token is in use. Destroying the source requests cancellation, so
+a token retrieved from a temporary source is already cancelled:
+
+.. code-block:: php
+
+    <?php
+
+    use Amp\DeferredCancellation;
+
+    $cancellation = (new DeferredCancellation())->getCancellation();
+    $cancellation->isRequested(); // true
