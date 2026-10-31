@@ -9,6 +9,9 @@ use Mago\Sdk\Syntax\SourceFile;
 
 class SyntaxHelper
 {
+	/**
+	 * @param non-negative-int $level
+	 */
 	public static function dump(SourceFile $file, Node $node, int $level = 0): void
 	{
 		$indent = \str_repeat('  ', $level);

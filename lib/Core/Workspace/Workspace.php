@@ -54,15 +54,12 @@ class Workspace implements \Countable, \IteratorAggregate
 			throw new UnknownDocument($textDocument->uri);
 		}
 
-		// if null, we take assume the new version as authoritative - otherwise
-		// if the new version is lower we discard it.
-		//
 		// the behavior described here:
 		// https://microsoft.github.io/language-server-protocol/specification#versionedTextDocumentIdentifier
-		// indicates that only the server should send NULL, but specifies no
-		// behavior the an update from the client to the server.
+		// specifies no behavior the an update from the client to the server, so
+		// discard updates carrying a version lower than the current one.
 		$currentVersion = $this->documentVersions[$textDocument->uri];
-		if (null !== $textDocument->version && $currentVersion > $textDocument->version) {
+		if ($currentVersion > $textDocument->version) {
 			$this->logger->info(\sprintf(
 				'Version "%s" of incoming document (%s) is older than current version (%s), ignoring',
 				$textDocument->version,

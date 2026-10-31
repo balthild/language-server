@@ -49,7 +49,7 @@ class DidChangeWatchedFilesListener implements ListenerProviderInterface
 				->client()
 				->registerCapability(
 					new Registration(
-						Uuid::uuid4()->__toString(),
+						Uuid::uuid4()->toString(),
 						'workspace/didChangeWatchedFiles',
 						new DidChangeWatchedFilesRegistrationOptions(\array_map(
 							static fn (string $glob) => new FileSystemWatcher($glob),

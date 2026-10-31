@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Phpactor\LanguageServer\Core\Server\Client;
 
-use DTL\Invoke\Invoke;
 use Phpactor\LanguageServer\Core\Server\RpcClient;
 use Phpactor\LanguageServerProtocol\MessageActionItem;
 use Phpactor\LanguageServerProtocol\MessageType;
@@ -46,10 +45,17 @@ final class MessageRequestClient
 
 		$result = $response->result;
 
-		if (null !== $result) {
-			return Invoke::new(MessageActionItem::class, (array) $result);
+		if (null === $result) {
+			return null;
 		}
 
-		return null;
+		if (!\is_array($result)) {
+			throw new \RuntimeException(\sprintf(
+				'Expected "window/showMessageRequest" to return an object, got "%s"',
+				\get_debug_type($result),
+			));
+		}
+
+		return MessageActionItem::fromArray($result, true);
 	}
 }

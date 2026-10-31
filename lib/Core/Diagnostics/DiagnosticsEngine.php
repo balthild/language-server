@@ -120,7 +120,6 @@ class DiagnosticsEngine
 					$this->locks[$providerId] = new DeferredFuture();
 
 					try {
-						/** @var Diagnostic[] $diagnostics */
 						$diagnostics = $provider->provideDiagnostics($textDocument, $token);
 					} catch (\Throwable $e) {
 						$message = \sprintf(

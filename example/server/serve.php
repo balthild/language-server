@@ -48,7 +48,7 @@ use Psr\Log\AbstractLogger;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-if (($argc ?? 0) === 1) {
+if ($argc === 1) {
 	echo <<<DOC
 		Usage: serve.php --address=127.0.0.1:9000 --type=tcp
 
@@ -88,16 +88,14 @@ $logger = new class extends AbstractLogger {
 
 	public function log($level, $message, array $context = []): void
 	{
-		$message =
-			json_encode(
-				[
-					'level' => $level,
-					'message' => $message,
-					'context' => $context,
-				],
-			)
-			. PHP_EOL
-			. PHP_EOL;
+		$message = json_encode(
+			[
+				'level' => $level,
+				'message' => $message,
+				'context' => $context,
+			],
+		);
+		$message = ($message ?: '') . PHP_EOL . PHP_EOL;
 		fwrite($this->err, $message);
 		fwrite($this->log, $message);
 	}
@@ -170,7 +168,7 @@ $builder = LanguageServerBuilder::create(new ClosureDispatcherFactory(
 
 if ($type === 'tcp') {
 	/** @phpstan-ignore-next-line */
-	$builder->tcpServer((string) $address);
+	$builder->tcpServer($address);
 }
 $builder
 	->withServerStats($stats)

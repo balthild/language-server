@@ -11,12 +11,15 @@ use Psr\Log\LoggerInterface;
 class AggregateDiagnosticsProvider implements DiagnosticsProvider
 {
 	/**
-	 * @var array<DiagnosticsProvider>
+	 * @var list<DiagnosticsProvider>
 	 */
 	private array $providers;
 
-	public function __construct(private LoggerInterface $logger, DiagnosticsProvider ...$providers)
-	{
+	public function __construct(
+		private LoggerInterface $logger,
+		DiagnosticsProvider ...$providers,
+	) {
+		/** @var list<DiagnosticsProvider> $providers */
 		$this->providers = $providers;
 	}
 

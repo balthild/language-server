@@ -72,7 +72,6 @@ class InitializeMiddleware implements Middleware
 			$request->id,
 			new InitializeResult($serverCapabilities, \array_merge([
 				'name' => 'unspecified',
-				'version' => 'unspecified',
 			], $this->serverInfo)),
 		);
 	}

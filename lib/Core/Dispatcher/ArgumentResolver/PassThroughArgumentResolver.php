@@ -14,10 +14,10 @@ final class PassThroughArgumentResolver implements ArgumentResolver
 	/**
 	 * {@inheritDoc}
 	 */
-	public function resolveArguments(object $object, string $method, Message $request): array
+	public function resolveArguments(object $object, string $method, Message $message): array
 	{
-		if ($request instanceof RequestMessage || $request instanceof NotificationMessage) {
-			return $request->params ?? [];
+		if ($message instanceof RequestMessage || $message instanceof NotificationMessage) {
+			return $message->params ?? [];
 		}
 
 		return [];

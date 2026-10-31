@@ -32,8 +32,8 @@ final class JsonRpcClient implements RpcClient
 	 */
 	public function request(string $method, array $params): ResponseMessage
 	{
-		$requestId = Uuid::uuid4()->__toString();
-		$response = $this->responseWatcher->waitForResponse((string) $requestId);
+		$requestId = (string) Uuid::uuid4();
+		$response = $this->responseWatcher->waitForResponse($requestId);
 		$this->transmitter->transmit(new RequestMessage($requestId, $method, $params));
 
 		return $response->await();

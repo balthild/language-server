@@ -26,7 +26,7 @@ interface CodeActionProvider
 	 *
 	 * @see Phpactor\LanguageServerProtocol\CodeAction
 	 *
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function kinds(): array;
 

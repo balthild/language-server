@@ -23,7 +23,7 @@ final class ClientClient
 	public function unregisterCapability(Unregistration ...$unregistrations): ResponseMessage
 	{
 		return $this->client->request('client/unregisterCapability', [
-			'unregistrations' => $unregistrations,
+			'unregisterations' => $unregistrations,
 		]);
 	}
 }
