@@ -17,7 +17,7 @@
 		"amphp/amp": "^3.0",
 		"amphp/byte-stream": "^2.1",
 		"amphp/socket": "^2.4",
-		"balthild/language-server-protocol": "dev-main",
+		"balthild/language-server-protocol": "dev-main#8863c31",
 		"dantleech/argument-resolver": "^1.1",
 		"dantleech/invoke": "^2.0",
 		"psr/event-dispatcher": "^1.0",
