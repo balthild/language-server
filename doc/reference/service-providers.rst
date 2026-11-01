@@ -26,6 +26,13 @@ This is similar to :doc:`method handlers <handlers>` with the exception that:
   its own fiber and should block for as long as the service is meant to run;
   the server stops it by cancelling the token.
 
+.. note::
+
+    ``Amp\Cancellation`` is a live token, not an immutable value object:
+    ``Amp\DeferredCancellation::__destruct()`` cancels it, so a token obtained
+    from a deferred cancellation that is no longer referenced is already
+    requested. See :doc:`method handlers <handlers>` for the lifetime rules.
+
 Usage
 -----
 

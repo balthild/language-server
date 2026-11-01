@@ -180,3 +180,22 @@ if the request is cancelled as follows:
 
 In the above example, when the server cancels this request, the exception will
 be thrown and we will return early.
+
+The ``Cancellation`` is a live token rather than an immutable value object: it
+is cancelled when its ``Amp\DeferredCancellation`` is destroyed. Keep the
+deferred cancellation alive for as long as the token may be used; a token
+obtained from a discarded deferred cancellation is already requested:
+
+.. code-block:: php
+
+    <?php
+
+    use Amp\DeferredCancellation;
+
+    $cancellation = (new DeferredCancellation())->getCancellation();
+    $cancellation->isRequested(); // true
+
+For request handlers the server owns the deferred cancellation and holds it
+while the handler runs. The trap is code that creates its own
+``DeferredCancellation`` — for example to compose or wrap tokens — and lets it
+go out of scope.
